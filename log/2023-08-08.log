@@ -1,0 +1,15 @@
+[douyin] 2023/08/08 00:33:13	INFO	C:/CodeLand/douyin/main.go:15	nihao
+[douyin] 2023/08/08 10:00:40	INFO	C:/CodeLand/douyin/main.go:17	nihao
+[douyin] 2023/08/08 10:24:15	INFO	C:/CodeLand/douyin/main.go:17	nihao
+[douyin] 2023/08/08 10:26:39	INFO	C:/CodeLand/douyin/main.go:17	nihao
+[douyin] 2023/08/08 10:32:35	INFO	C:/CodeLand/douyin/main.go:17	nihao
+[douyin] 2023/08/08 14:11:13	INFO	C:/CodeLand/douyin/main.go:18	nihao
+[douyin] 2023/08/08 14:12:38	INFO	C:/CodeLand/douyin/main.go:19	nihao
+[douyin] 2023/08/08 14:48:11	INFO	C:/CodeLand/douyin/main.go:18	nihao
+[douyin] 2023/08/08 14:48:33	INFO	C:/CodeLand/douyin/main.go:19	nihao
+[douyin] 2023/08/08 14:51:52	INFO	C:/CodeLand/douyin/main.go:19	nihao
+[douyin] 2023/08/08 14:53:25	INFO	C:/CodeLand/douyin/main.go:19	nihao
+[douyin] 2023/08/08 14:55:11	INFO	C:/CodeLand/douyin/main.go:19	nihao
+[douyin] 2023/08/08 15:24:44	INFO	C:/CodeLand/douyin/main.go:19	nihao
+[douyin] 2023/08/08 15:25:17	INFO	C:/CodeLand/douyin/api/user.go:17	Key: 'UserRegisterReq.Username' Error:Field validation for 'Username' failed on the 'required' tag
+Key: 'UserRegisterReq.Password' Error:Field validation for 'Password' failed on the 'required' tag
