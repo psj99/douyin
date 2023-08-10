@@ -1,23 +1,20 @@
 package dao
 
 import (
-	"context"
 	"douyin/conf"
+
+	"context"
 	"fmt"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
-	"time"
 )
 
 var _db *gorm.DB
-
-func NewDBClient(ctx context.Context) *gorm.DB {
-	db := _db
-	return db.WithContext(ctx)
-}
 
 func MySQLInit() {
 	mysqlCfg := conf.Cfg.MySql
@@ -61,4 +58,9 @@ func MySQLInit() {
 	sqlDB.SetConnMaxLifetime(30 * time.Second) // 设置连接的最大可复用时间
 
 	_db = db
+}
+
+// 防止误更改公共实例变量的指向并在使用前添加上下文
+func GetDB(ctx context.Context) *gorm.DB {
+	return _db.WithContext(ctx)
 }

@@ -2,9 +2,9 @@ package main
 
 import (
 	"douyin/conf"
-	"douyin/pkg/utils"
 	"douyin/repository/dao"
 	"douyin/routes"
+	"douyin/utils"
 )
 
 func init() {
@@ -14,11 +14,11 @@ func init() {
 }
 
 func main() {
-
 	utils.PrintAsJson(conf.Cfg)
-	utils.ZapLogger.Info("nihao")
-	//db := dao.NewDBClient(context.Background())
-	//dao.MakeMigrate(db)
+
+	// 初次使用或数据表结构变更时取消以下行的注释以迁移数据表
+	// dao.MakeMigrate()
+
 	r := routes.NewRouter()
 	_ = r.Run(conf.Cfg.System.HttpPort)
 }

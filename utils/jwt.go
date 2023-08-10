@@ -34,10 +34,10 @@ func GenerateToken(id uint, username string) (string, error) {
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "Auth_Server",                                   // 签发者
 			Subject:   username,                                        // 签发对象
-			Audience:  jwt.ClaimStrings{"ALL"},                         //签发受众
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour)),   //过期时间
-			NotBefore: jwt.NewNumericDate(time.Now().Add(time.Second)), //最早使用时间
-			IssuedAt:  jwt.NewNumericDate(time.Now()),                  //签发时间
+			Audience:  jwt.ClaimStrings{"ALL"},                         // 签发受众
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour)),   // 过期时间
+			NotBefore: jwt.NewNumericDate(time.Now().Add(time.Second)), // 最早使用时间
+			IssuedAt:  jwt.NewNumericDate(time.Now()),                  // 签发时间
 			ID:        randStr(10),                                     // wt ID, 类似于盐值
 		},
 	}

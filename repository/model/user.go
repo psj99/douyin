@@ -18,9 +18,7 @@ type User struct {
 	Follows         []*User   `gorm:"many2many:follow;"`
 }
 
-const (
-	passWordCost = 12 //密码加密难度
-)
+const passWordCost = 12 //密码加密难度
 
 // SetPassword 设置密码
 func (user *User) SetPassword(password string) error {

@@ -3,39 +3,27 @@ package dao
 import (
 	"context"
 	"douyin/repository/model"
-	"gorm.io/gorm"
 )
 
-type userDao struct {
-	*gorm.DB
+// 根据用户id找到用户
+func FindUserByUserId(ctx context.Context, id uint) (user *model.User, err error) {
+	DB := GetDB(ctx)
+	user = &model.User{}
+	err = DB.Model(&model.User{}).Where("id=?", id).First(user).Error
+	return user, err
 }
 
-func NewUserDao(ctx context.Context) *userDao {
-	if ctx == nil {
-		ctx = context.Background()
-	}
-	return &userDao{NewDBClient(ctx)}
+// 根据用户名找到用户
+func FindUserByUserName(ctx context.Context, userName string) (user *model.User, err error) {
+	DB := GetDB(ctx)
+	user = &model.User{}
+	err = DB.Model(&model.User{}).Where("user_name=?", userName).First(user).Error
+	return user, err
 }
 
-// FindUserByUserId 根据用户id找到用户
-func (dao *userDao) FindUserByUserId(id uint) (user *model.User, err error) {
-	err = dao.DB.Model(&model.User{}).Where("id=?", id).
-		First(&user).Error
-
-	return
-}
-
-// FindUserByUserName 根据用户名找到用户
-func (dao *userDao) FindUserByUserName(userName string) (user *model.User, err error) {
-	err = dao.DB.Model(&model.User{}).Where("user_name=?", userName).
-		First(&user).Error
-
-	return
-}
-
-// CreateUser 创建User
-func (dao *userDao) CreateUser(user *model.User) (err error) {
-	err = dao.DB.Model(&model.User{}).Create(user).Error
-
-	return
+// 创建User
+func CreateUser(ctx context.Context, user *model.User) (err error) {
+	DB := GetDB(ctx)
+	err = DB.Model(&model.User{}).Create(user).Error
+	return err
 }

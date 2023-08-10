@@ -2,6 +2,9 @@ package routes
 
 import (
 	"douyin/api"
+
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -10,14 +13,14 @@ func NewRouter() *gin.Engine {
 	app := ginRouter.Group("/douyin")
 	{
 		app.GET("ping", func(context *gin.Context) {
-			context.JSON(200, "success")
+			context.JSON(http.StatusOK, "success")
 		})
 	}
 
 	userApi := app.Group("user")
 	{
-		userApi.POST("/register", api.UserRegister)
-		userApi.POST("/login", api.UserLogin)
+		userApi.POST("/register/", api.UserRegister)
+		userApi.POST("/login/", api.UserLogin)
 	}
 
 	return ginRouter
