@@ -17,7 +17,7 @@ func UserRegister(ctx *gin.Context) {
 	err := ctx.ShouldBind(req)
 	if err != nil {
 		utils.ZapLogger.Errorf("ShouldBind err: %v", err)
-		ctx.JSON(http.StatusInternalServerError, &response.UserRegisterResp{
+		ctx.JSON(http.StatusBadRequest, &response.UserRegisterResp{
 			Status_Code: -1,
 			Status_Msg:  "注册失败: " + err.Error(),
 		})
@@ -42,6 +42,8 @@ func UserRegister(ctx *gin.Context) {
 	}
 
 	// 注册成功
+	resp.Status_Code = 0
+	resp.Status_Msg = "注册成功"
 	ctx.JSON(http.StatusOK, resp)
 }
 
@@ -51,7 +53,7 @@ func UserLogin(ctx *gin.Context) {
 	err := ctx.ShouldBind(req)
 	if err != nil {
 		utils.ZapLogger.Errorf("ShouldBind err: %v", err)
-		ctx.JSON(http.StatusInternalServerError, &response.UserLoginResp{
+		ctx.JSON(http.StatusBadRequest, &response.UserLoginResp{
 			Status_Code: -1,
 			Status_Msg:  "登录失败: " + err.Error(),
 		})
@@ -72,8 +74,11 @@ func UserLogin(ctx *gin.Context) {
 			Status_Code: -1,
 			Status_Msg:  "登录失败: " + err.Error(),
 		})
+		return
 	}
 
 	// 登录成功
+	resp.Status_Code = 0
+	resp.Status_Msg = "登录成功"
 	ctx.JSON(http.StatusOK, resp)
 }

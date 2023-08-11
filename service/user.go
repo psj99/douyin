@@ -42,24 +42,20 @@ func UserRegister(ctx context.Context, req *request.UserRegisterReq) (resp *resp
 	}
 
 	// 存储用户信息
-	err = dao.CreateUser(ctx, user)
+	user, err = dao.CreateUser(ctx, user)
 	if err != nil {
 		utils.ZapLogger.Errorf("CreateUser err %v", err)
 		return nil, err
 	}
 
-	// 注册后自动登录
-	userLoginReq := &request.UserLoginReq{
-		Username: req.Username,
-		Password: req.Password,
-	}
-	loginResp, err := UserLogin(ctx, userLoginReq)
+	// 注册后生成用户鉴权token(自动登录)
+	token, err := utils.GenerateToken(user.ID, user.UserName)
 	if err != nil {
-		utils.ZapLogger.Errorf("UserLogin err %v", err)
+		utils.ZapLogger.Errorf("GenerateToken err: %v", err)
 		return nil, err
 	}
 
-	return &response.UserRegisterResp{Status_Code: 0, Status_Msg: "注册成功", User_Id: loginResp.User_Id, Token: loginResp.Token}, err
+	return &response.UserRegisterResp{User_Id: user.ID, Token: token}, err
 }
 
 // 用户登录
@@ -89,5 +85,5 @@ func UserLogin(ctx context.Context, req *request.UserLoginReq) (resp *response.U
 		return nil, err
 	}
 
-	return &response.UserLoginResp{Status_Code: 0, Status_Msg: "登录成功", User_Id: user.ID, Token: token}, err
+	return &response.UserLoginResp{User_Id: user.ID, Token: token}, err
 }

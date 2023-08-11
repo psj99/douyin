@@ -1,8 +1,9 @@
 package dao
 
 import (
-	"context"
 	"douyin/repository/model"
+
+	"context"
 )
 
 // 根据用户id找到用户
@@ -22,8 +23,8 @@ func FindUserByUserName(ctx context.Context, userName string) (user *model.User,
 }
 
 // 创建User
-func CreateUser(ctx context.Context, user *model.User) (err error) {
+func CreateUser(ctx context.Context, userInfo *model.User) (user *model.User, err error) {
 	DB := GetDB(ctx)
-	err = DB.Model(&model.User{}).Create(user).Error
-	return err
+	err = DB.Model(&model.User{}).Create(userInfo).Error
+	return userInfo, err
 }
