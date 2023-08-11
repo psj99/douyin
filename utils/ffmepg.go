@@ -10,7 +10,8 @@ import (
 )
 
 func GetSnapshot(videoPath, snapshotPath string, frameNum int) (snapshotName string, err error) {
-	snapshotPath = "./assets/" + snapshotPath
+	workDir, _ := os.Getwd()
+	snapshotPath = workDir + "/assets/" + snapshotPath
 	buf := bytes.NewBuffer(nil)
 	err = ffmpeg.Input(videoPath).
 		Filter("select", ffmpeg.Args{fmt.Sprintf("gte(n,%d)", frameNum)}).

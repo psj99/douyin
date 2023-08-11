@@ -2,6 +2,7 @@ package routes
 
 import (
 	"douyin/api"
+	"douyin/utils"
 
 	"net/http"
 
@@ -10,18 +11,19 @@ import (
 
 func NewRouter() *gin.Engine {
 	ginRouter := gin.Default()
-	app := ginRouter.Group("/douyin")
+	rootApi := ginRouter.Group("/douyin")
 	{
-		app.GET("ping", func(context *gin.Context) {
+		rootApi.GET("/ping/", func(context *gin.Context) {
 			context.JSON(http.StatusOK, "success")
 		})
-	}
 
-	userApi := app.Group("user")
-	{
-		userApi.POST("/register/", api.UserRegister)
-		userApi.POST("/login/", api.UserLogin)
-	}
+		rootApi.GET("/feed/", utils.MiddlewareRateLimit(10, 1), api.VideoFeed) // 应用限流中间件 最大10次/秒 每秒恢复1次
 
+		userApi := rootApi.Group("user")
+		{
+			userApi.POST("/register/", api.UserRegister)
+			userApi.POST("/login/", api.UserLogin)
+		}
+	}
 	return ginRouter
 }

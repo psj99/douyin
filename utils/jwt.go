@@ -8,15 +8,18 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type MyCustomClaims struct {
-	Id       uint   `json:"id"`
-	UserName string `json:"user_name"`
+// 自定义错误类型
+var ErrorTokenInvalid = errors.New("token无效")
+
+type CustomClaims struct {
+	Id        uint   `json:"id"`
+	User_Name string `json:"user_name"`
 	jwt.RegisteredClaims
 }
 
 const sign_key = "hello jwt"
 
-// 随机字符串
+// 随机字符串基础
 var letters = []rune("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 func randStr(str_len int) string {
@@ -28,9 +31,9 @@ func randStr(str_len int) string {
 }
 
 func GenerateToken(id uint, username string) (string, error) {
-	claim := MyCustomClaims{
-		Id:       id,
-		UserName: username,
+	claim := CustomClaims{
+		Id:        id,
+		User_Name: username,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "Auth_Server",                                   // 签发者
 			Subject:   username,                                        // 签发对象
@@ -45,21 +48,21 @@ func GenerateToken(id uint, username string) (string, error) {
 	return token, err
 }
 
-func ParseToken(token_string string) (*MyCustomClaims, error) {
-	token, err := jwt.ParseWithClaims(token_string, &MyCustomClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(sign_key), nil //返回签名密钥
+func ParseToken(token_string string) (*CustomClaims, error) {
+	token, err := jwt.ParseWithClaims(token_string, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(sign_key), nil // 返回签名密钥
 	})
 	if err != nil {
 		return nil, err
 	}
 
 	if !token.Valid {
-		return nil, errors.New("claim invalid")
+		return nil, ErrorTokenInvalid
 	}
 
-	claims, ok := token.Claims.(*MyCustomClaims)
+	claims, ok := token.Claims.(*CustomClaims)
 	if !ok {
-		return nil, errors.New("invalid claim type")
+		return nil, ErrorTokenInvalid
 	}
 
 	return claims, nil
