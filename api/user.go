@@ -1,54 +1,79 @@
 package api
 
 import (
-	"douyin/pkg/types/request"
-	"douyin/pkg/types/response"
-	"douyin/pkg/utils"
 	"douyin/service"
-	"github.com/gin-gonic/gin"
+	"douyin/service/types/request"
+	"douyin/service/types/response"
+	"douyin/utils"
+
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func UserRegister(ctx *gin.Context) {
-	var req request.UserRegisterReq
-	err := ctx.ShouldBind(&req)
-	// 参数校验
+	// 绑定JSON到结构体
+	req := &request.UserRegisterReq{}
+	err := ctx.ShouldBind(req)
 	if err != nil {
-		utils.ZapLogger.Infoln(err)
+		utils.ZapLogger.Errorf("ShouldBind err: %v", err)
+		ctx.JSON(http.StatusInternalServerError, &response.UserRegisterResp{
+			Status_Code: -1,
+			Status_Msg:  "注册失败: " + err.Error(),
+		})
 		return
 	}
-	userSrv := service.GetUserSrv()
-	resp, err := userSrv.UserRegister(ctx, &req)
+
+	// 调用用户注册处理
+	resp, err := service.UserRegister(ctx, req)
 	if err != nil {
-		utils.ZapLogger.Infof("err: %v", err)
-		ctx.JSON(http.StatusBadRequest, &response.UserLoginResp{
-			Code: -1,
-			Msg:  "注册失败: " + err.Error(),
+		utils.ZapLogger.Errorf("UserRegister err: %v", err)
+		var httpCode int
+		if err == service.ErrorUserExists {
+			httpCode = http.StatusConflict
+		} else {
+			httpCode = http.StatusInternalServerError
+		}
+		ctx.JSON(httpCode, &response.UserRegisterResp{
+			Status_Code: -1,
+			Status_Msg:  "注册失败: " + err.Error(),
 		})
+		return
 	}
+
+	// 注册成功
 	ctx.JSON(http.StatusOK, resp)
 }
 
 func UserLogin(ctx *gin.Context) {
-	var req request.UserLoginReq
-	err := ctx.ShouldBind(&req)
-	// 参数校验
+	// 绑定JSON到结构体
+	req := &request.UserLoginReq{}
+	err := ctx.ShouldBind(req)
 	if err != nil {
-		utils.ZapLogger.Infoln(err)
-		ctx.JSON(http.StatusBadRequest, &response.UserLoginResp{
-			Code: -1,
-			Msg:  "请求参数错误",
+		utils.ZapLogger.Errorf("ShouldBind err: %v", err)
+		ctx.JSON(http.StatusInternalServerError, &response.UserLoginResp{
+			Status_Code: -1,
+			Status_Msg:  "登录失败: " + err.Error(),
 		})
 		return
 	}
-	userSrv := service.GetUserSrv()
-	resp, err := userSrv.UserLogin(ctx, &req)
+
+	// 调用用户登录处理
+	resp, err := service.UserLogin(ctx, req)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, &response.UserLoginResp{
-			Code: -1,
-			Msg:  "登录失败: " + err.Error(),
+		utils.ZapLogger.Errorf("UserLogin err: %v", err)
+		var httpCode int
+		if err == service.ErrorUserNotExists || err == service.ErrorWrongPassword {
+			httpCode = http.StatusUnauthorized
+		} else {
+			httpCode = http.StatusInternalServerError
+		}
+		ctx.JSON(httpCode, &response.UserLoginResp{
+			Status_Code: -1,
+			Status_Msg:  "登录失败: " + err.Error(),
 		})
 	}
-	ctx.JSON(http.StatusOK, resp)
 
+	// 登录成功
+	ctx.JSON(http.StatusOK, resp)
 }

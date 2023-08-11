@@ -6,14 +6,12 @@ import (
 	"github.com/spf13/viper"
 )
 
-var Cfg *Config
-
-type Config struct {
-	System *System `yaml:"system"`
-	MySql  *MySql  `yaml:"mysql"`
-	Redis  *Redis  `yaml:"redis"`
-	Zap    *Zap    `yaml:"zap"`
-	Log    *Log    `yaml:"log"`
+type System struct {
+	AppEnv   string `yaml:"appEnv"`
+	Domain   string `yaml:"domain"`
+	Version  string `yaml:"version"`
+	HttpPort string `yaml:"httpPort"`
+	Host     string `yaml:"host"`
 }
 
 type MySql struct {
@@ -33,14 +31,6 @@ type Redis struct {
 	RedisNetwork  string `yaml:"redisNetwork"`
 }
 
-type System struct {
-	AppEnv   string `yaml:"appEnv"`
-	Domain   string `yaml:"domain"`
-	Version  string `yaml:"version"`
-	HttpPort string `yaml:"httpPort"`
-	Host     string `yaml:"host"`
-}
-
 type Zap struct {
 	Level        string // 级别
 	Prefix       string // 日志前缀
@@ -56,6 +46,16 @@ type Log struct {
 	MaxAge     int
 	Compress   bool
 }
+
+type Config struct {
+	System *System `yaml:"system"`
+	MySql  *MySql  `yaml:"mysql"`
+	Redis  *Redis  `yaml:"redis"`
+	Zap    *Zap    `yaml:"zap"`
+	Log    *Log    `yaml:"log"`
+}
+
+var Cfg *Config
 
 func InitConfig() {
 	workDir, _ := os.Getwd()

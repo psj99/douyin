@@ -2,22 +2,22 @@ system:
   domain: douyin
   version: v0.1
   appEnv: "debug"
-  httpPort: ":4000"
+  httpPort: ":8080"
   host: "localhost"
 
 mysql:
   dbHost: "127.0.0.1"
   dbPort: "3306"
-  dbName: "douyin"
+  dbName: "tiny_douyin"
   userName: "root"
-  password: "123456"
+  password: "tiny-douyin"
   charset: "utf8mb4"
 
 redis:
   redisDbName: 1
   redisHost: 127.0.0.1
   redisPort: 6380
-  redisPassword: 123456
+  redisPassword: tiny-douyin
   redisNetwork: tcp
 
 zap:
