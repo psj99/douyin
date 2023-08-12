@@ -88,8 +88,7 @@ func UserInfo(ctx *gin.Context) {
 	// 从请求中读取目标用户ID并与token比对
 	target_id := ctx.Query("user_id")
 	user_id, ok := ctx.Get("user_id")
-	target_id_uint64, _ := strconv.ParseUint(target_id, 10, 64)
-	if !ok || user_id.(uint) != uint(target_id_uint64) {
+	if !ok || target_id != strconv.FormatUint(uint64(user_id.(uint)), 10) {
 		utils.ZapLogger.Errorf("UserInfo err: 查询目标与请求用户不同")
 		ctx.JSON(http.StatusUnauthorized, &response.CommonResp{
 			Status_Code: -1,
