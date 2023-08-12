@@ -1,0 +1,35 @@
+system:
+  domain: douyin
+  version: v0.1
+  appEnv: "debug"
+  httpPort: ":8080"
+  host: "localhost"
+
+mysql:
+  dbHost: "127.0.0.1"
+  dbPort: "3306"
+  dbName: "douyin"
+  userName: "root"
+  password: "123456"
+  charset: "utf8mb4"
+
+redis:
+  redisDbName: 1
+  redisHost: 127.0.0.1
+  redisPort: 6379
+  redisPassword: 123456
+  redisNetwork: tcp
+
+zap:
+  Level: "info"            # 日志级别: debug, info, warn, error, dpanic, panic, fatal, 默认 info
+  Format: "console"         # 输出格式: console, json
+  Prefix: "[douyin] " # 日志前缀
+  Directory: "log"          # 存放日志的文件夹
+  ShowLine: true            # 是否显示哪行调用
+  LogInConsole: true        # 是否输出到控制台
+
+Log:               # lumberjack 分割日志的配置信息
+  MaxSize: 500
+  MaxBackups: 3
+  MaxAge: 28
+  Compress: false

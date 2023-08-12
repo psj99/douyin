@@ -1,6 +1,8 @@
 package conf
 
 import (
+	"flag"
+	"fmt"
 	"os"
 
 	"github.com/spf13/viper"
@@ -58,17 +60,40 @@ type Config struct {
 var Cfg *Config
 
 func InitConfig() {
-	workDir, _ := os.Getwd()
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(workDir + "/conf/locale")
-	viper.AddConfigPath(workDir)
-	err := viper.ReadInConfig()
+
+	viper := NewConfig()
+	// workDir, _ := os.Getwd()
+	// viper.SetConfigName("config")
+	// viper.SetConfigType("yaml")
+	// viper.AddConfigPath(workDir + "/conf/locale")
+	// viper.AddConfigPath(workDir)
+	// err := viper.ReadInConfig()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	err := viper.Unmarshal(&Cfg)
 	if err != nil {
 		panic(err)
 	}
-	err = viper.Unmarshal(&Cfg)
+}
+
+func NewConfig() *viper.Viper {
+	// 配置文件优先级：环境变量 > 命令行参数 > 默认值
+	envConf := os.Getenv("APP_CONF")
+	if envConf == "" {
+		flag.StringVar(&envConf, "conf", "conf/local.yaml", "config path, eg: -conf conf/local.yaml")
+		flag.Parse()
+	}
+	fmt.Println("load conf file:", envConf)
+	return getConfig(envConf)
+}
+
+func getConfig(path string) *viper.Viper {
+	conf := viper.New()
+	conf.SetConfigFile(path)
+	err := conf.ReadInConfig()
 	if err != nil {
 		panic(err)
 	}
+	return conf
 }

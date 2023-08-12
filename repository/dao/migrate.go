@@ -16,6 +16,6 @@ func MakeMigrate() {
 	if err != nil {
 		panic("数据表迁移失败")
 	} else {
-		utils.ZapLogger.Warnf("AutoMigrate warn: 数据表迁移成功")
+		utils.ZapLogger.Info("AutoMigrate warn: 数据表迁移成功")
 	}
 }
