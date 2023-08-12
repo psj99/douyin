@@ -9,6 +9,7 @@ import (
 
 	"context"
 	"errors"
+	"strconv"
 
 	"gorm.io/gorm"
 )
@@ -86,4 +87,43 @@ func UserLogin(ctx context.Context, req *request.UserLoginReq) (resp *response.U
 	}
 
 	return &response.UserLoginResp{User_Id: user.ID, Token: token}, err
+}
+
+// 用户信息
+func UserInfo(ctx context.Context, req *request.UserInfoReq) (resp *response.UserInfoResp, err error) {
+	// 读取用户信息
+	userId, err := strconv.ParseUint(req.User_ID, 10, 64) // string转十进制uint64
+	if err != nil {
+		utils.ZapLogger.Errorf("ParseUint err: %v", err)
+		return nil, err
+	}
+	user, err := dao.FindUserByUserId(context.TODO(), uint(userId))
+	if err != nil {
+		utils.ZapLogger.Errorf("FindUserByUserId err: %v", err)
+		return nil, err
+	}
+
+	// 临时方案 亟待优化 (需要大幅更改数据库模型) //TODO
+	followCount := uint(len(user.Follows))     // 统计关注数
+	followerCount := uint(len(user.Followers)) // 统计粉丝数
+	workCount := uint(len(user.Works))         // 统计作品数
+	var favoritedCount uint = 0                // 统计获赞数
+	for _, video := range user.Works {
+		favoritedCount += uint(len(video.Favorited))
+	}
+	favoriteCount := uint(len(user.Favorites)) // 统计点赞数
+
+	return &response.UserInfoResp{User: response.User{
+		ID:               user.ID,
+		Name:             user.Username,
+		Follow_Count:     followCount,
+		Follower_Count:   followerCount,
+		Is_Follow:        true, // 自己默认关注自己
+		Avatar:           user.Avatar,
+		Background_Image: user.BackgroundImage,
+		Signature:        user.Signature,
+		Total_Favorited:  strconv.FormatUint(uint64(favoritedCount), 10),
+		Work_Count:       workCount,
+		Favorite_Count:   favoriteCount,
+	}}, err
 }

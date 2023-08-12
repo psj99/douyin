@@ -7,6 +7,7 @@ import (
 	"douyin/utils"
 
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -84,5 +85,33 @@ func UserLogin(ctx *gin.Context) {
 }
 
 func UserInfo(ctx *gin.Context) {
+	// 从请求中读取目标用户ID并与token比对
+	target_id := ctx.Query("user_id")
+	user_id, ok := ctx.Get("user_id")
+	target_id_uint64, _ := strconv.ParseUint(target_id, 10, 64)
+	if !ok || user_id.(uint) != uint(target_id_uint64) {
+		utils.ZapLogger.Errorf("UserInfo err: 查询目标与请求用户不同")
+		ctx.JSON(http.StatusUnauthorized, &response.CommonResp{
+			Status_Code: -1,
+			Status_Msg:  "无权读取",
+		})
+		return
+	}
 
+	// 调用获取用户信息
+	req := &request.UserInfoReq{User_ID: target_id}
+	resp, err := service.UserInfo(ctx, req)
+	if err != nil {
+		utils.ZapLogger.Errorf("UserInfo err: %v", err)
+		ctx.JSON(http.StatusInternalServerError, &response.CommonResp{
+			Status_Code: -1,
+			Status_Msg:  "获取失败: " + err.Error(),
+		})
+		return
+	}
+
+	// 读取成功
+	resp.Status_Code = 0
+	resp.Status_Msg = "获取成功"
+	ctx.JSON(http.StatusOK, resp)
 }

@@ -39,13 +39,13 @@ func GenerateToken(user_id uint, username string) (string, error) {
 		User_ID:  user_id,
 		Username: username,
 		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    "Auth_Server",                                   // 签发者
-			Subject:   username,                                        // 签发对象
-			Audience:  jwt.ClaimStrings{"ALL"},                         // 签发受众
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour)),   // 过期时间
-			NotBefore: jwt.NewNumericDate(time.Now().Add(time.Second)), // 最早使用时间
-			IssuedAt:  jwt.NewNumericDate(time.Now()),                  // 签发时间
-			ID:        randStr(10),                                     // wt ID, 类似于盐值
+			Issuer:    "Auth_Server",                                 // 签发者
+			Subject:   username,                                      // 签发对象
+			Audience:  jwt.ClaimStrings{"ALL"},                       // 签发受众
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour)), // 过期时间
+			NotBefore: jwt.NewNumericDate(time.Now()),                // 最早使用时间
+			IssuedAt:  jwt.NewNumericDate(time.Now()),                // 签发时间
+			ID:        randStr(10),                                   // wt ID, 类似于盐值
 		},
 	}
 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claim).SignedString([]byte(sign_key))
@@ -102,7 +102,7 @@ func MiddlewareAuth() gin.HandlerFunc {
 				ctx.Abort()
 				return
 			} else {
-				ZapLogger.Errorf("MiddlewareAuth err: token解析失败")
+				ZapLogger.Errorf("MiddlewareAuth err: %v", err)
 				ctx.JSON(http.StatusInternalServerError, response.CommonResp{
 					Status_Code: -1,
 					Status_Msg:  "token解析失败",

@@ -7,15 +7,16 @@ import (
 
 type User struct {
 	gorm.Model
-	Username        string `gorm:"unique"`
+	Username        string `gorm:"uniqueIndex"`
 	Password        string
 	Avatar          string
 	BackgroundImage string
 	Signature       string
-	Videos          []Video   `gorm:"foreignKey:UserID"`
+	Works           []Video   `gorm:"foreignKey:UserID"`
+	Favorites       []*Video  `gorm:"many2many:favorite;"`
 	Comments        []Comment `gorm:"foreignKey:UserID"`
-	Likes           []*Video  `gorm:"many2many:like;"`
 	Follows         []*User   `gorm:"many2many:follow;"`
+	Followers       []*User   `gorm:"many2many:follow;"`
 }
 
 const passWordCost = 12 //密码加密难度
