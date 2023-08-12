@@ -18,18 +18,3 @@ type Video struct {
 	Is_Favorite    bool   `json:"is_favorite"`    // true-已点赞，false-未点赞
 	Title          string `json:"title"`          // 视频标题
 }
-
-// 视频作者信息
-type User struct {
-	ID               int64  `json:"id"`               // 用户id
-	Name             string `json:"name"`             // 用户名称
-	Follow_Count     int64  `json:"follow_count"`     // 关注总数
-	Follower_Count   int64  `json:"follower_count"`   // 粉丝总数
-	Is_Follow        bool   `json:"is_follow"`        // true-已关注，false-未关注
-	Avatar           string `json:"avatar"`           // 用户头像
-	Background_Image string `json:"background_image"` // 用户个人页顶部大图
-	Signature        string `json:"signature"`        // 个人简介
-	Total_Favorited  string `json:"total_favorited"`  // 获赞数量
-	Work_Count       int64  `json:"work_count"`       // 作品数
-	Favorite_Count   int64  `json:"favorite_count"`   // 喜欢数
-}

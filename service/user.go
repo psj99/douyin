@@ -33,7 +33,7 @@ func UserRegister(ctx context.Context, req *request.UserRegisterReq) (resp *resp
 	// 只有err == ErrRecordNotFound时才可以注册
 	// 准备要存储的内容
 	user := &model.User{
-		UserName: req.Username,
+		Username: req.Username,
 	}
 	err = user.SetPassword(req.Password) // 向要存储的内容中添加单向加密后的密码
 	if err != nil {
@@ -49,7 +49,7 @@ func UserRegister(ctx context.Context, req *request.UserRegisterReq) (resp *resp
 	}
 
 	// 注册后生成用户鉴权token(自动登录)
-	token, err := utils.GenerateToken(user.ID, user.UserName)
+	token, err := utils.GenerateToken(user.ID, user.Username)
 	if err != nil {
 		utils.ZapLogger.Errorf("GenerateToken err: %v", err)
 		return nil, err
@@ -79,7 +79,7 @@ func UserLogin(ctx context.Context, req *request.UserLoginReq) (resp *response.U
 	}
 
 	// 校验成功时生成用户鉴权token
-	token, err := utils.GenerateToken(user.ID, user.UserName)
+	token, err := utils.GenerateToken(user.ID, user.Username)
 	if err != nil {
 		utils.ZapLogger.Errorf("GenerateToken err: %v", err)
 		return nil, err

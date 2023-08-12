@@ -1,10 +1,14 @@
 package utils
 
 import (
+	"douyin/service/types/response"
+
 	"errors"
 	"math/rand"
+	"net/http"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -12,8 +16,8 @@ import (
 var ErrorTokenInvalid = errors.New("token无效")
 
 type CustomClaims struct {
-	Id        uint   `json:"id"`
-	User_Name string `json:"user_name"`
+	User_ID  uint   `json:"user_id"`
+	Username string `json:"username"`
 	jwt.RegisteredClaims
 }
 
@@ -30,10 +34,10 @@ func randStr(str_len int) string {
 	return string(rand_bytes)
 }
 
-func GenerateToken(id uint, username string) (string, error) {
+func GenerateToken(user_id uint, username string) (string, error) {
 	claim := CustomClaims{
-		Id:        id,
-		User_Name: username,
+		User_ID:  user_id,
+		Username: username,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "Auth_Server",                                   // 签发者
 			Subject:   username,                                        // 签发对象
@@ -66,4 +70,52 @@ func ParseToken(token_string string) (*CustomClaims, error) {
 	}
 
 	return claims, nil
+}
+
+// gin中间件
+// jwt鉴权 验证token并提取user_id与username
+func MiddlewareAuth() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		// 尝试从GET中提取token
+		tokenStr := ctx.Query("token")
+		// 若失败则尝试从POST中提取token
+		if tokenStr == "" {
+			tokenStr = ctx.PostForm("token")
+		}
+		// 若无法提取token
+		if tokenStr == "" {
+			ZapLogger.Warnf("MiddlewareAuth warn: 未授权请求")
+			ctx.JSON(http.StatusUnauthorized, response.CommonResp{Status_Code: -1, Status_Msg: "需要token"})
+			ctx.Abort()
+			return
+		}
+
+		// 解析/校验token (自动验证有效期等)
+		claims, err := ParseToken(tokenStr)
+		if err != nil {
+			if err == ErrorTokenInvalid {
+				ZapLogger.Warnf("MiddlewareAuth warn: 未授权请求")
+				ctx.JSON(http.StatusUnauthorized, response.CommonResp{
+					Status_Code: -1,
+					Status_Msg:  "token无效",
+				})
+				ctx.Abort()
+				return
+			} else {
+				ZapLogger.Errorf("MiddlewareAuth err: token解析失败")
+				ctx.JSON(http.StatusInternalServerError, response.CommonResp{
+					Status_Code: -1,
+					Status_Msg:  "token解析失败",
+				})
+				ctx.Abort()
+				return
+			}
+		}
+
+		// 提取user_id和username
+		ctx.Set("user_id", claims.User_ID)
+		ctx.Set("username", claims.Username)
+
+		ctx.Next()
+	}
 }

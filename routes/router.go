@@ -23,6 +23,7 @@ func NewRouter() *gin.Engine {
 		{
 			userApi.POST("/register/", api.UserRegister)
 			userApi.POST("/login/", api.UserLogin)
+			userApi.GET("/", utils.MiddlewareAuth(), api.UserInfo) // 应用jwt鉴权中间件
 		}
 	}
 	return ginRouter

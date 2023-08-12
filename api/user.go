@@ -82,3 +82,7 @@ func UserLogin(ctx *gin.Context) {
 	resp.Status_Msg = "登录成功"
 	ctx.JSON(http.StatusOK, resp)
 }
+
+func UserInfo(ctx *gin.Context) {
+
+}
