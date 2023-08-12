@@ -1,4 +1,4 @@
-package utils
+package printer
 
 import (
 	"bytes"

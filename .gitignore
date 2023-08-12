@@ -2,4 +2,4 @@
 .vscode
 
 conf/locale/config.yaml
-log
+storage/log

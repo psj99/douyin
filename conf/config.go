@@ -10,19 +10,23 @@ import (
 
 type System struct {
 	AppEnv   string `yaml:"appEnv"`
-	Domain   string `yaml:"domain"`
-	Version  string `yaml:"version"`
 	HttpPort string `yaml:"httpPort"`
-	Host     string `yaml:"host"`
+}
+
+type JWT struct {
+	SignKey string `yaml:"sign_key"`
 }
 
 type MySql struct {
-	DbHost   string `yaml:"dbHost"`
-	DbPort   string `yaml:"dbPort"`
-	DbName   string `yaml:"dbName"`
-	UserName string `yaml:"userName"`
-	Password string `yaml:"password"`
-	Charset  string `yaml:"charset"`
+	DbHost          string `yaml:"dbHost"`
+	DbPort          string `yaml:"dbPort"`
+	DbName          string `yaml:"dbName"`
+	UserName        string `yaml:"userName"`
+	Password        string `yaml:"password"`
+	Charset         string `yaml:"charset"`
+	MaxIdleConns    int    `yaml:"maxIdleConns"`
+	MaxOpenConns    int    `yaml:"maxOpenConns"`
+	ConnMaxLifetime int    `yaml:"connMaxLifetime"`
 }
 
 type Redis struct {
@@ -32,28 +36,23 @@ type Redis struct {
 	RedisDbName   int    `yaml:"redisDbName"`
 	RedisNetwork  string `yaml:"redisNetwork"`
 }
-
-type Zap struct {
-	Level        string // 级别
-	Prefix       string // 日志前缀
-	Format       string // 输出
-	Directory    string // 日志文件夹
-	MaxAge       int    // 日志留存时间
-	ShowLine     bool   // 显示行
-	LogInConsole bool   // 输出控制台
-}
 type Log struct {
-	MaxSize    int
-	MaxBackups int
-	MaxAge     int
-	Compress   bool
+	Level        string `yaml:"level"`
+	Prefix       string `yaml:"prefix"`
+	Format       string `yaml:"format"`
+	Directory    string `yaml:"directory"`
+	MaxAge       int    `yaml:"maxAge"`
+	ShowLine     bool   `yaml:"showLine"`
+	LogInConsole bool   `yaml:"logInConsole"`
+	MaxSize      int    `yaml:"maxSize"`
+	MaxBackups   int    `yaml:"maxBackups"`
+	Compress     bool   `yaml:"compress"`
 }
 
 type Config struct {
 	System *System `yaml:"system"`
 	MySql  *MySql  `yaml:"mysql"`
 	Redis  *Redis  `yaml:"redis"`
-	Zap    *Zap    `yaml:"zap"`
 	Log    *Log    `yaml:"log"`
 }
 
@@ -62,15 +61,6 @@ var Cfg *Config
 func InitConfig() {
 
 	viper := NewConfig()
-	// workDir, _ := os.Getwd()
-	// viper.SetConfigName("config")
-	// viper.SetConfigType("yaml")
-	// viper.AddConfigPath(workDir + "/conf/locale")
-	// viper.AddConfigPath(workDir)
-	// err := viper.ReadInConfig()
-	// if err != nil {
-	// 	panic(err)
-	// }
 	err := viper.Unmarshal(&Cfg)
 	if err != nil {
 		panic(err)
@@ -85,15 +75,13 @@ func NewConfig() *viper.Viper {
 		flag.Parse()
 	}
 	fmt.Println("load conf file:", envConf)
-	return getConfig(envConf)
-}
 
-func getConfig(path string) *viper.Viper {
-	conf := viper.New()
-	conf.SetConfigFile(path)
-	err := conf.ReadInConfig()
+	v := viper.New()
+	v.SetConfigFile(envConf)
+	err := v.ReadInConfig()
 	if err != nil {
 		panic(err)
 	}
-	return conf
+
+	return v
 }

@@ -1,4 +1,4 @@
-package utils
+package ffmepg
 
 import (
 	"bytes"
@@ -18,19 +18,19 @@ func GetSnapshot(videoPath, snapshotPath string, frameNum int) (snapshotName str
 		WithOutput(buf, os.Stdout).
 		Run()
 	if err != nil {
-		ZapLogger.Errorf("ffmpegInput err: %v", err)
+		// ZapLogger.Errorf("ffmpegInput err: %v", err)
 		return "", err
 	}
 
 	img, err := imaging.Decode(buf)
 	if err != nil {
-		ZapLogger.Errorf("imagingDecode err: %v", err)
+		// ZapLogger.Errorf("imagingDecode err: %v", err)
 		return "", err
 	}
 
 	err = imaging.Save(img, snapshotPath+".png")
 	if err != nil {
-		ZapLogger.Errorf("imagingSave: %v", err)
+		// ZapLogger.Errorf("imagingSave: %v", err)
 		return "", err
 	}
 

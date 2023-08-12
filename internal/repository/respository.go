@@ -1,23 +1,36 @@
-package dao
+package repository
 
 import (
-	"douyin/conf"
-
 	"context"
+	"douyin/conf"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 )
 
-var _db *gorm.DB
+type Repository struct {
+	db     *gorm.DB
+	rdb    *redis.Client
+	logger *log.Logger
+}
 
-func MySQLInit() {
-	mysqlCfg := conf.Cfg.MySql
+func NewRepository(db *gorm.DB, rdb *redis.Client, logger *log.Logger) *Repository {
+	return &Repository{
+		db:     db,
+		rdb:    rdb,
+		logger: logger,
+	}
+}
+
+func NewDB(cfg *conf.Config) *gorm.DB {
+	mysqlCfg := cfg.MySql
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=True&loc=Local",
 		mysqlCfg.UserName,
@@ -53,14 +66,27 @@ func MySQLInit() {
 	}
 
 	sqlDB, _ := db.DB()
-	sqlDB.SetMaxIdleConns(20)                  // 设置连接池中的最大闲置连接
-	sqlDB.SetMaxOpenConns(100)                 // 设置数据库的最大连接数量
-	sqlDB.SetConnMaxLifetime(30 * time.Second) // 设置连接的最大可复用时间
-
-	_db = db
+	sqlDB.SetMaxIdleConns(mysqlCfg.MaxIdleConns)                                    // 设置连接池中的最大闲置连接
+	sqlDB.SetMaxOpenConns(mysqlCfg.MaxOpenConns)                                    // 设置数据库的最大连接数量
+	sqlDB.SetConnMaxLifetime(time.Duration(mysqlCfg.ConnMaxLifetime) * time.Second) // 设置连接的最大可复用时间
+	return db
 }
 
-// 防止误更改公共实例变量的指向并在使用前添加上下文
-func GetDB(ctx context.Context) *gorm.DB {
-	return _db.WithContext(ctx)
+func NewRedis(cfg *conf.Config) *redis.Client {
+	redisCfg := cfg.Redis
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%s", redisCfg.RedisHost, redisCfg.RedisPort),
+		Password: redisCfg.RedisPassword,
+		DB:       redisCfg.RedisDbName,
+	})
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err := rdb.Ping(ctx).Result()
+	if err != nil {
+		panic(fmt.Sprintf("redis error: %s", err.Error()))
+	}
+
+	return rdb
 }
