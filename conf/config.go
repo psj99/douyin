@@ -81,7 +81,7 @@ func NewConfig() *viper.Viper {
 	// 配置文件优先级：环境变量 > 命令行参数 > 默认值
 	envConf := os.Getenv("APP_CONF")
 	if envConf == "" {
-		flag.StringVar(&envConf, "conf", "conf/local.yaml", "config path, eg: -conf conf/local.yaml")
+		flag.StringVar(&envConf, "conf", "conf/locale/config.yaml", "config path, eg: -conf conf/local.yaml")
 		flag.Parse()
 	}
 	fmt.Println("load conf file:", envConf)
