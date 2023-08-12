@@ -4,9 +4,7 @@ import (
 	"douyin/service/types/response"
 
 	"errors"
-	"math/rand"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -15,46 +13,22 @@ import (
 // 自定义错误类型
 var ErrorTokenInvalid = errors.New("token无效")
 
-type CustomClaims struct {
-	User_ID  uint   `json:"user_id"`
-	Username string `json:"username"`
-	jwt.RegisteredClaims
+const sign_key = "tiny-douyin"
+
+func GenerateToken(user_id uint, username string) (token string, err error) {
+	return jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"user_id":  user_id,
+		"username": username,
+	}).SignedString([]byte(sign_key))
 }
 
-const sign_key = "hello jwt"
-
-// 随机字符串基础
-var letters = []rune("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-
-func randStr(str_len int) string {
-	rand_bytes := make([]rune, str_len)
-	for i := range rand_bytes {
-		rand_bytes[i] = letters[rand.Intn(len(letters))]
-	}
-	return string(rand_bytes)
-}
-
-func GenerateToken(user_id uint, username string) (string, error) {
-	claim := CustomClaims{
-		User_ID:  user_id,
-		Username: username,
-		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    "Auth_Server",                                 // 签发者
-			Subject:   username,                                      // 签发对象
-			Audience:  jwt.ClaimStrings{"ALL"},                       // 签发受众
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour)), // 过期时间
-			NotBefore: jwt.NewNumericDate(time.Now()),                // 最早使用时间
-			IssuedAt:  jwt.NewNumericDate(time.Now()),                // 签发时间
-			ID:        randStr(10),                                   // wt ID, 类似于盐值
-		},
-	}
-	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claim).SignedString([]byte(sign_key))
-	return token, err
-}
-
-func ParseToken(token_string string) (*CustomClaims, error) {
-	token, err := jwt.ParseWithClaims(token_string, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(sign_key), nil // 返回签名密钥
+func ParseToken(tokenString string) (jwt.MapClaims, error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		_, ok := token.Method.(*jwt.SigningMethodHMAC)
+		if !ok {
+			return nil, ErrorTokenInvalid
+		}
+		return []byte(sign_key), nil
 	})
 	if err != nil {
 		return nil, err
@@ -64,7 +38,7 @@ func ParseToken(token_string string) (*CustomClaims, error) {
 		return nil, ErrorTokenInvalid
 	}
 
-	claims, ok := token.Claims.(*CustomClaims)
+	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
 		return nil, ErrorTokenInvalid
 	}
@@ -113,8 +87,8 @@ func MiddlewareAuth() gin.HandlerFunc {
 		}
 
 		// 提取user_id和username
-		ctx.Set("user_id", claims.User_ID)
-		ctx.Set("username", claims.Username)
+		ctx.Set("user_id", uint(claims["user_id"].(float64))) // token中解析数字默认float64
+		ctx.Set("username", claims["username"])
 
 		ctx.Next()
 	}
