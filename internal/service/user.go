@@ -2,16 +2,15 @@ package service
 
 import (
 	"context"
-	"douyin/internal/model"
 	"douyin/internal/pkg/request"
+	"douyin/internal/pkg/response"
 	"douyin/internal/repository"
 )
 
 type UserService interface {
-	Register(ctx context.Context, req *request.RegisterRequest) error
-	Login(ctx context.Context, req *request.LoginRequest) (string, error)
-	GetProfile(ctx context.Context, userId string) (*model.User, error)
-	UpdateProfile(ctx context.Context, userId string, req *request.UpdateProfileRequest) error
+	Register(ctx context.Context, req *request.UserRegisterReq) (*response.UserRegisterResp, error)
+	Login(ctx context.Context, req *request.UserLoginReq) (*response.UserLoginResp, error)
+	GetUserInfo(ctx context.Context, userId uint) (*response.UserInfo, error)
 }
 
 type userService struct {
@@ -26,22 +25,17 @@ func NewUserService(service *Service, userRepo repository.UserRepository) UserSe
 	}
 }
 
-func (s *userService) Register(ctx context.Context, req *request.RegisterRequest) error {
+func (s *userService) Register(ctx context.Context, req *request.UserRegisterReq) (*response.UserRegisterResp, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s *userService) Login(ctx context.Context, req *request.LoginRequest) (string, error) {
+func (s *userService) Login(ctx context.Context, req *request.UserLoginReq) (*response.UserLoginResp, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (s *userService) GetProfile(ctx context.Context, userId string) (*model.User, error) {
+func (s *userService) GetUserInfo(ctx context.Context, userId uint) (*response.UserInfo, error) {
 	//TODO implement me
-	panic("implement me")
-}
-
-func (s *userService) UpdateProfile(ctx context.Context, userId string, req *request.UpdateProfileRequest) error {
-	// TODO implement me
 	panic("implement me")
 }
