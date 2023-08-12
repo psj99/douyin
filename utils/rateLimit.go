@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"douyin/service/types/response"
+
 	"net/http"
 	"time"
 
@@ -14,7 +16,10 @@ func MiddlewareRateLimit(capacity int64, recover int64) gin.HandlerFunc {
 	bucket := ratelimit.NewBucketWithQuantum(time.Second, capacity, recover)
 	return func(ctx *gin.Context) {
 		if bucket.TakeAvailable(1) < 1 {
-			ctx.String(http.StatusTooManyRequests, "请求过频")
+			ctx.JSON(http.StatusTooManyRequests, &response.CommonResp{
+				Status_Code: -1,
+				Status_Msg:  "请求过频",
+			})
 			ctx.Abort()
 			return
 		}
