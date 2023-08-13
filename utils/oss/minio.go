@@ -4,6 +4,7 @@ import (
 	"douyin/conf"
 
 	"context"
+	"io"
 	"net"
 	"net/url"
 	"time"
@@ -50,4 +51,16 @@ func (m *MinIOService) getURL(ctx context.Context, objectName string) (objectURL
 func (m *MinIOService) remove(ctx context.Context, objectName string) (err error) {
 	opts := minio.RemoveObjectOptions{} // 可选选项
 	return m.client.RemoveObject(ctx, m.bucketName, objectName, opts)
+}
+
+// 若对象大小未知则objectSize可以为-1 但将会占用大量内存!!!
+func (m *MinIOService) upStream(ctx context.Context, objectName string, reader io.Reader, objectSize int64) (err error) {
+	opts := minio.PutObjectOptions{} // 可选元数据
+	_, err = m.client.PutObject(ctx, m.bucketName, objectName, reader, objectSize, opts)
+	return err
+}
+
+func (m *MinIOService) download(ctx context.Context, objectName string, filePath string) (err error) {
+	opts := minio.GetObjectOptions{} // 可选元数据
+	return m.client.FGetObject(ctx, m.bucketName, objectName, filePath, opts)
 }
