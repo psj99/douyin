@@ -7,51 +7,43 @@ import (
 )
 
 type System struct {
-	AppEnv   string `yaml:"appEnv"`
-	Domain   string `yaml:"domain"`
-	Version  string `yaml:"version"`
 	HttpPort string `yaml:"httpPort"`
-	Host     string `yaml:"host"`
 }
 
-type MySql struct {
+type MySQL struct {
 	DbHost   string `yaml:"dbHost"`
 	DbPort   string `yaml:"dbPort"`
 	DbName   string `yaml:"dbName"`
-	UserName string `yaml:"userName"`
+	Username string `yaml:"username"`
 	Password string `yaml:"password"`
 	Charset  string `yaml:"charset"`
 }
 
-type Redis struct {
-	RedisHost     string `yaml:"redisHost"`
-	RedisPort     string `yaml:"redisPort"`
-	RedisPassword string `yaml:"redisPassword"`
-	RedisDbName   int    `yaml:"redisDbName"`
-	RedisNetwork  string `yaml:"redisNetwork"`
+type OSS struct {
+	Service         string `yaml:"service"`
+	OssHost         string `yaml:"ossHost"`
+	OssPort         string `yaml:"ossPort"`
+	BucketName      string `yaml:"bucketName"`
+	AccessKeyID     string `yaml:"accessKeyID"`
+	SecretAccessKey string `yaml:"secretAccessKey"`
+	Expiry          int    `yaml:"expiry"`
 }
 
-type Zap struct {
-	Level        string // 级别
-	Prefix       string // 日志前缀
-	Format       string // 输出
-	Directory    string // 日志文件夹
-	MaxAge       int    // 日志留存时间
-	ShowLine     bool   // 显示行
-	LogInConsole bool   // 输出控制台
-}
 type Log struct {
-	MaxSize    int
-	MaxBackups int
-	MaxAge     int
-	Compress   bool
+	Path       string `yaml:"path"`       // 输出路径
+	Level      string `yaml:"level"`      // 输出级别
+	Prefix     string `yaml:"prefix"`     // 日志前缀
+	ShowLine   bool   `yaml:"showLine"`   // 显示行号
+	MaxSize    int    `yaml:"maxSize"`    // 单个日志文件最大大小
+	MaxBackups int    `yaml:"maxBackups"` // 最多保留数量
+	MaxAge     int    `yaml:"maxAge"`     // 最多保留天数
+	Compress   bool   `yaml:"compress"`   // 是否gzip压缩
 }
 
 type Config struct {
 	System *System `yaml:"system"`
-	MySql  *MySql  `yaml:"mysql"`
-	Redis  *Redis  `yaml:"redis"`
-	Zap    *Zap    `yaml:"zap"`
+	MySQL  *MySQL  `yaml:"mysql"`
+	OSS    *OSS    `yaml:"oss"`
 	Log    *Log    `yaml:"log"`
 }
 
