@@ -80,7 +80,7 @@ func (u userHandler) GetUserInfo(ctx *gin.Context) {
 	if userId == "" {
 		ctx.JSON(http.StatusUnauthorized, resp.UserInfoResp{
 			Response: resp.ResponseErr("请先登录"),
-			User:     nil,
+			UserInfo: nil,
 		})
 		return
 	}
@@ -89,14 +89,14 @@ func (u userHandler) GetUserInfo(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, resp.UserInfoResp{
 			Response: resp.ResponseErr("服务器出错了"),
-			User:     nil,
+			UserInfo: nil,
 		})
 		return
 	}
 
 	ctx.JSON(http.StatusOK, resp.UserInfoResp{
 		Response: resp.ResponseOK(),
-		User:     userInfo,
+		UserInfo: userInfo,
 	})
 }
 

@@ -10,7 +10,7 @@ type UserLoginResp UserRegisterResp // 目前版本登录与注册响应元素�
 
 type UserInfoResp struct {
 	Response
-	User *UserInfo `json:"user"` // 用户信息
+	UserInfo *UserInfo `json:"user"` // 用户信息
 }
 
 type UserInfo struct {

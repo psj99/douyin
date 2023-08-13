@@ -1,24 +1,24 @@
 package repository
 
 import (
+	"context"
 	"douyin/internal/model"
 )
 
 type VideoRepository interface {
-	FirstById(id int64) (*model.Video, error)
+	FirstById(ctx context.Context, id int64) (*model.Video, error)
 }
 type videoRepository struct {
 	*Repository
+}
+
+func (r *videoRepository) FirstById(ctx context.Context, id int64) (*model.Video, error) {
+	//TODO implement me
+	panic("implement me")
 }
 
 func NewVideoRepository(repository *Repository) VideoRepository {
 	return &videoRepository{
 		Repository: repository,
 	}
-}
-
-func (r *videoRepository) FirstById(id int64) (*model.Video, error) {
-	var video model.Video
-	// TODO: query db
-	return &video, nil
 }
