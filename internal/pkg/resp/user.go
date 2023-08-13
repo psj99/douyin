@@ -1,18 +1,16 @@
-package response
+package resp
 
 type UserRegisterResp struct {
-	StatusCode int32  `json:"status_code"` // 状态码：0-成功, 其他-失败
-	StatusMsg  string `json:"status_msg"`  // 返回状态描述
-	UserId     int64  `json:"user_id"`     // 用户id
-	Token      string `json:"token"`       // 用户鉴权token
+	Response
+	UserId int64  `json:"user_id"` // 用户id
+	Token  string `json:"token"`   // 用户鉴权token
 }
 
 type UserLoginResp UserRegisterResp // 目前版本登录与注册响应元素类型完全相同
 
 type UserInfoResp struct {
-	StatusCode int32     `json:"status_code"` // 状态码：0-成功, 其他-失败
-	StatusMsg  string    `json:"status_msg"`  // 返回状态描述
-	User       *UserInfo `json:"user"`        // 用户信息
+	Response
+	User *UserInfo `json:"user"` // 用户信息
 }
 
 type UserInfo struct {

@@ -18,12 +18,12 @@ func NewRouter(
 	gin.SetMode(gin.DebugMode)
 	r := gin.Default()
 
-	r.Use(
-		//middleware.CORSMiddleware(),
-		// middleware.ResponseLogMiddleware(logger),
-		// middleware.RequestLogMiddleware(logger),
-		//middleware.SignMiddleware(log),
-	)
+	//r.Use(
+	//middleware.CORSMiddleware(),
+	//middleware.ResponseLogMiddleware(logger),
+	//middleware.RequestLogMiddleware(logger),
+	//middleware.SignMiddleware(log),
+	//)
 
 	// 不需要登陆
 	app := r.Group("/douyin")
@@ -37,6 +37,7 @@ func NewRouter(
 
 		app.POST("/user/register", userHandler.Register)
 		app.POST("/user/login", userHandler.Login)
+		app.GET("/feed")
 	}
 
 	// 需要登录

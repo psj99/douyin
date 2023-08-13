@@ -14,7 +14,7 @@ type User struct {
 	Signature       string
 	Videos          []Video   `gorm:"foreignKey:UserID"`
 	Comments        []Comment `gorm:"foreignKey:UserID"`
-	Likes           []*Video  `gorm:"many2many:like;"`
+	Likes           []*Video  `gorm:"many2many:favorite;"`
 	Follows         []*User   `gorm:"many2many:follow;"`
 }
 
