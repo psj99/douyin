@@ -56,18 +56,8 @@ type Config struct {
 	Log    *Log    `yaml:"log"`
 }
 
-var Cfg *Config
-
-func InitConfig() {
-
-	viper := NewConfig()
-	err := viper.Unmarshal(&Cfg)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func NewConfig() *viper.Viper {
+func NewConfig() *Config {
+	var cfg *Config
 	// 配置文件优先级：环境变量 > 命令行参数 > 默认值
 	envConf := os.Getenv("APP_CONF")
 	if envConf == "" {
@@ -83,5 +73,10 @@ func NewConfig() *viper.Viper {
 		panic(err)
 	}
 
-	return v
+	err = v.Unmarshal(cfg)
+	if err != nil {
+		panic(err)
+	}
+
+	return cfg
 }

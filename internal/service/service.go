@@ -3,7 +3,7 @@ package service
 import (
 	"douyin/pkg/helper/sid"
 	"douyin/pkg/jwt"
-	"log"
+	"douyin/pkg/log"
 )
 
 type Service struct {

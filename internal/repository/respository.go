@@ -3,8 +3,9 @@ package repository
 import (
 	"context"
 	"douyin/conf"
+	"douyin/pkg/log"
 	"fmt"
-	"log"
+
 	"time"
 
 	"github.com/gin-gonic/gin"

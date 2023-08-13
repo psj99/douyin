@@ -1,20 +1,16 @@
 package main
 
 import (
-	"douyin/conf"
 	"douyin/internal/repository"
 	"douyin/pkg/config"
 	"douyin/pkg/helper/printer"
 	"douyin/pkg/log"
 )
 
-var cfg *conf.Config
+//var cfg *conf.Config
 
-func init() {
-	cfg = config.NewConfig()
-
-}
 func main() {
+	cfg := config.NewConfig()
 	printer.PrintAsJson(cfg)
 
 	m := NewMigrate(repository.NewDB(cfg), log.NewLog(cfg))

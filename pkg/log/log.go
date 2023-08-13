@@ -23,7 +23,6 @@ func NewLog(cfg *conf.Config) *Logger {
 }
 
 func initZap(cfg *conf.Config) *Logger {
-
 	// 第一个参数是输出的格式 第二个参数是输出的位置 第三个参数是日志输出级别
 	core := zapcore.NewCore(getEncoder(cfg),
 		//zapcore.NewMultiWriteSyncer 输出到多个位置 比如 文件 console中

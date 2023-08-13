@@ -2,7 +2,7 @@ package handler
 
 import (
 	"douyin/pkg/jwt"
-	"log"
+	"douyin/pkg/log"
 
 	"github.com/gin-gonic/gin"
 )

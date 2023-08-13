@@ -27,7 +27,6 @@ func NewRouter(
 	// No route group has permission
 	noAuthRouter := r.Group("/")
 	{
-
 		noAuthRouter.GET("/", func(ctx *gin.Context) {
 			logger.WithContext(ctx).Info("hello")
 			ctx.JSON(http.StatusOK, map[string]interface{}{
