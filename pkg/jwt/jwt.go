@@ -23,11 +23,11 @@ func NewJwt(cfg *conf.Config) *JWT {
 	return &JWT{key: []byte(sign_key)}
 }
 
-func (j *JWT) GenToken(userId string, expiresAt time.Time) (string, error) {
+func (j *JWT) GenToken(userId string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, MyCustomClaims{
 		UserId: userId,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(expiresAt),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now()),
 			Issuer:    "",
