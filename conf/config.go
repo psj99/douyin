@@ -8,6 +8,7 @@ import (
 
 type System struct {
 	HttpPort string `yaml:"httpPort"`
+	TempDir  string `yaml:"tempDir"`
 }
 
 type MySQL struct {

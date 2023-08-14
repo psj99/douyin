@@ -1,5 +1,6 @@
 system:
   httpPort: "8080"               # http服务运行端口 字符串
+  tempDir: "./temp"              # 临时目录路径 字符串
 
 mysql:
   dbHost: "127.0.0.1"            # MySQL数据库地址 字符串

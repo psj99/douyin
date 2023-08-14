@@ -54,7 +54,7 @@ func (m *MinIOService) remove(ctx context.Context, objectName string) (err error
 }
 
 // 若对象大小未知则objectSize可以为-1 但将会占用大量内存!!!
-func (m *MinIOService) upStream(ctx context.Context, objectName string, reader io.Reader, objectSize int64) (err error) {
+func (m *MinIOService) uploadStream(ctx context.Context, objectName string, reader io.Reader, objectSize int64) (err error) {
 	opts := minio.PutObjectOptions{} // 可选元数据
 	_, err = m.client.PutObject(ctx, m.bucketName, objectName, reader, objectSize, opts)
 	return err
