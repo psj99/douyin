@@ -22,7 +22,7 @@ var ErrorWrongPassword = errors.New("账号或密码错误")
 // 用户注册
 func UserRegister(ctx context.Context, req *request.UserRegisterReq) (resp *response.UserRegisterResp, err error) {
 	// 查找用户是否已存在
-	_, err = dao.FindUserByUserName(context.TODO(), req.Username)
+	_, err = dao.FindUserByUsername(context.TODO(), req.Username)
 	if err == nil {
 		err = ErrorUserExists
 		return nil, err
@@ -62,7 +62,7 @@ func UserRegister(ctx context.Context, req *request.UserRegisterReq) (resp *resp
 // 用户登录
 func UserLogin(ctx context.Context, req *request.UserLoginReq) (resp *response.UserLoginResp, err error) {
 	// 查找用户是否已存在
-	user, err := dao.FindUserByUserName(context.TODO(), req.Username)
+	user, err := dao.FindUserByUsername(context.TODO(), req.Username)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			err = ErrorUserNotExists
@@ -97,7 +97,7 @@ func UserInfo(ctx context.Context, req *request.UserInfoReq) (resp *response.Use
 		utils.ZapLogger.Errorf("ParseUint err: %v", err)
 		return nil, err
 	}
-	user, err := dao.FindUserByUserId(context.TODO(), uint(userId))
+	user, err := dao.FindUserByID(context.TODO(), uint(userId))
 	if err != nil {
 		utils.ZapLogger.Errorf("FindUserByUserId err: %v", err)
 		return nil, err

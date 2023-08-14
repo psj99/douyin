@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserRegister(ctx *gin.Context) {
+func POSTUserRegister(ctx *gin.Context) {
 	// 绑定JSON到结构体
 	req := &request.UserRegisterReq{}
 	err := ctx.ShouldBind(req)
@@ -48,7 +48,7 @@ func UserRegister(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 
-func UserLogin(ctx *gin.Context) {
+func POSTUserLogin(ctx *gin.Context) {
 	// 绑定JSON到结构体
 	req := &request.UserLoginReq{}
 	err := ctx.ShouldBind(req)
@@ -84,7 +84,7 @@ func UserLogin(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 
-func UserInfo(ctx *gin.Context) {
+func GETUserInfo(ctx *gin.Context) {
 	// 从请求中读取目标用户ID并与token比对
 	target_id := ctx.Query("user_id")
 	user_id, ok := ctx.Get("user_id")
@@ -98,7 +98,7 @@ func UserInfo(ctx *gin.Context) {
 	}
 
 	// 调用获取用户信息
-	req := &request.UserInfoReq{User_ID: target_id}
+	req := &request.UserInfoReq{User_ID: target_id, Token: ctx.Query("token")}
 	resp, err := service.UserInfo(ctx, req)
 	if err != nil {
 		utils.ZapLogger.Errorf("UserInfo err: %v", err)

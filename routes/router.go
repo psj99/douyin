@@ -17,13 +17,13 @@ func NewRouter() *gin.Engine {
 			context.JSON(http.StatusOK, "success")
 		})
 
-		rootApi.GET("/feed/", utils.MiddlewareRateLimit(10, 1), api.VideoFeed) // 应用限流中间件 最大10次/秒 每秒恢复1次
+		rootApi.GET("/feed/", utils.MiddlewareRateLimit(10, 1), api.GETVideoFeed) // 应用限流中间件 最大10次/秒 每秒恢复1次
 
 		userApi := rootApi.Group("user")
 		{
-			userApi.POST("/register/", api.UserRegister)
-			userApi.POST("/login/", api.UserLogin)
-			userApi.GET("/", utils.MiddlewareAuth(), api.UserInfo) // 应用jwt鉴权中间件
+			userApi.POST("/register/", api.POSTUserRegister)
+			userApi.POST("/login/", api.POSTUserLogin)
+			userApi.GET("/", utils.MiddlewareAuth(), api.GETUserInfo) // 应用jwt鉴权中间件
 		}
 	}
 	return ginRouter
