@@ -59,7 +59,7 @@ func MiddlewareAuth() gin.HandlerFunc {
 		// 若无法提取token
 		if tokenStr == "" {
 			ZapLogger.Warnf("MiddlewareAuth warn: 未授权请求")
-			ctx.JSON(http.StatusUnauthorized, response.CommonResp{Status_Code: -1, Status_Msg: "需要token"})
+			ctx.JSON(http.StatusUnauthorized, response.Status{Status_Code: -1, Status_Msg: "需要token"})
 			ctx.Abort()
 			return
 		}
@@ -69,7 +69,7 @@ func MiddlewareAuth() gin.HandlerFunc {
 		if err != nil {
 			if err == ErrorTokenInvalid {
 				ZapLogger.Warnf("MiddlewareAuth warn: 未授权请求")
-				ctx.JSON(http.StatusUnauthorized, response.CommonResp{
+				ctx.JSON(http.StatusUnauthorized, response.Status{
 					Status_Code: -1,
 					Status_Msg:  "token无效",
 				})
@@ -77,7 +77,7 @@ func MiddlewareAuth() gin.HandlerFunc {
 				return
 			} else {
 				ZapLogger.Errorf("MiddlewareAuth err: %v", err)
-				ctx.JSON(http.StatusInternalServerError, response.CommonResp{
+				ctx.JSON(http.StatusInternalServerError, response.Status{
 					Status_Code: -1,
 					Status_Msg:  "token解析失败",
 				})

@@ -18,7 +18,7 @@ func UserRegister(ctx *gin.Context) {
 	err := ctx.ShouldBind(req)
 	if err != nil {
 		utils.ZapLogger.Errorf("ShouldBind err: %v", err)
-		ctx.JSON(http.StatusBadRequest, &response.CommonResp{
+		ctx.JSON(http.StatusBadRequest, &response.Status{
 			Status_Code: -1,
 			Status_Msg:  "注册失败: " + err.Error(),
 		})
@@ -35,7 +35,7 @@ func UserRegister(ctx *gin.Context) {
 		} else {
 			httpCode = http.StatusInternalServerError
 		}
-		ctx.JSON(httpCode, &response.CommonResp{
+		ctx.JSON(httpCode, &response.Status{
 			Status_Code: -1,
 			Status_Msg:  "注册失败: " + err.Error(),
 		})
@@ -43,8 +43,8 @@ func UserRegister(ctx *gin.Context) {
 	}
 
 	// 注册成功
-	resp.Status_Code = 0
-	resp.Status_Msg = "注册成功"
+	status := response.Status{Status_Code: 0, Status_Msg: "注册成功"}
+	resp.Status = status
 	ctx.JSON(http.StatusOK, resp)
 }
 
@@ -54,7 +54,7 @@ func UserLogin(ctx *gin.Context) {
 	err := ctx.ShouldBind(req)
 	if err != nil {
 		utils.ZapLogger.Errorf("ShouldBind err: %v", err)
-		ctx.JSON(http.StatusBadRequest, &response.CommonResp{
+		ctx.JSON(http.StatusBadRequest, &response.Status{
 			Status_Code: -1,
 			Status_Msg:  "登录失败: " + err.Error(),
 		})
@@ -71,7 +71,7 @@ func UserLogin(ctx *gin.Context) {
 		} else {
 			httpCode = http.StatusInternalServerError
 		}
-		ctx.JSON(httpCode, &response.CommonResp{
+		ctx.JSON(httpCode, &response.Status{
 			Status_Code: -1,
 			Status_Msg:  "登录失败: " + err.Error(),
 		})
@@ -79,8 +79,8 @@ func UserLogin(ctx *gin.Context) {
 	}
 
 	// 登录成功
-	resp.Status_Code = 0
-	resp.Status_Msg = "登录成功"
+	status := response.Status{Status_Code: 0, Status_Msg: "登录成功"}
+	resp.Status = status
 	ctx.JSON(http.StatusOK, resp)
 }
 
@@ -90,7 +90,7 @@ func UserInfo(ctx *gin.Context) {
 	user_id, ok := ctx.Get("user_id")
 	if !ok || target_id != strconv.FormatUint(uint64(user_id.(uint)), 10) {
 		utils.ZapLogger.Errorf("UserInfo err: 查询目标与请求用户不同")
-		ctx.JSON(http.StatusUnauthorized, &response.CommonResp{
+		ctx.JSON(http.StatusUnauthorized, &response.Status{
 			Status_Code: -1,
 			Status_Msg:  "无权读取",
 		})
@@ -102,7 +102,7 @@ func UserInfo(ctx *gin.Context) {
 	resp, err := service.UserInfo(ctx, req)
 	if err != nil {
 		utils.ZapLogger.Errorf("UserInfo err: %v", err)
-		ctx.JSON(http.StatusInternalServerError, &response.CommonResp{
+		ctx.JSON(http.StatusInternalServerError, &response.Status{
 			Status_Code: -1,
 			Status_Msg:  "获取失败: " + err.Error(),
 		})
@@ -110,7 +110,7 @@ func UserInfo(ctx *gin.Context) {
 	}
 
 	// 读取成功
-	resp.Status_Code = 0
-	resp.Status_Msg = "获取成功"
+	status := response.Status{Status_Code: 0, Status_Msg: "获取成功"}
+	resp.Status = status
 	ctx.JSON(http.StatusOK, resp)
 }

@@ -1,19 +1,19 @@
 package response
 
 type UserRegisterResp struct {
-	CommonResp
+	Status
 	User_Id uint   `json:"user_id"` // 用户id
 	Token   string `json:"token"`   // 用户鉴权token
 }
 
 type UserLoginResp struct {
-	CommonResp
+	Status
 	User_Id uint   `json:"user_id"` // 用户id
 	Token   string `json:"token"`   // 用户鉴权token
 }
 
 type UserInfoResp struct {
-	CommonResp
+	Status
 	User User `json:"user"` // 用户信息
 }
 

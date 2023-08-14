@@ -17,7 +17,7 @@ func MiddlewareRateLimit(capacity int64, recover int64) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		if bucket.TakeAvailable(1) < 1 {
 			ZapLogger.Warnf("MiddlewareRateLimit warn: 达到处理量上限")
-			ctx.JSON(http.StatusTooManyRequests, &response.CommonResp{
+			ctx.JSON(http.StatusTooManyRequests, &response.Status{
 				Status_Code: -1,
 				Status_Msg:  "请求过频",
 			})
