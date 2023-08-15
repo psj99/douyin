@@ -70,20 +70,6 @@ func (videoHandler videoHandler) PublishAction(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp.PublishActionResp{
 		Response: resp.ResponseOK(),
 	})
-
-	//uploader := qiniu.NewQiniuUploader(
-	//	"s3RYVO1nDvkpx8GFOgzySq_nRp7hefFNkF2QFRvj",
-	//	"oVDq14H6LrMwkeBwfjS-1adlDDfPbyTdv5J80K7a",
-	//	"tk-repo",
-	//	"ryv7jqdrm.hn-bkt.clouddn.com")
-	//
-	//fileURL, coverURL, err := uploader.UploadFile(ctx, file)
-	//if err != nil {
-	//	ctx.JSON(http.StatusOK, gin.H{"err": err.Error()})
-	//	return
-	//}
-	//videoHandler.logger.Info("上传成功", zap.String("fileURL", fileURL), zap.String("coverURL", fileURL))
-	//ctx.JSON(http.StatusOK, gin.H{"fileURL": fileURL, "coverURL": coverURL})
 }
 
 func (videoHandler videoHandler) Feed(ctx *gin.Context) {
