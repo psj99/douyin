@@ -2,6 +2,7 @@ package qiniu
 
 import (
 	"context"
+	"douyin/conf"
 	"encoding/base64"
 	"fmt"
 	"github.com/qiniu/go-sdk/v7/auth/qbox"
@@ -20,22 +21,12 @@ type QiniuUploader struct {
 	Domain    string
 }
 
-//
-//func NewQiniuUploader(cfg *conf.Config) *QiniuUploader {
-//	return &QiniuUploader{
-//		AccessKey: cfg.Qiniu.AccessKey,
-//		SecretKey: cfg.Qiniu.SecretKey,
-//		Bucket:    cfg.Qiniu.Bucket,
-//		Domain:    cfg.Qiniu.Domain,
-//	}
-//}
-
-func NewQiniuUploader(accessKey, secretKey, bucket, domain string) *QiniuUploader {
+func NewQiniuUploader(cfg *conf.Config) *QiniuUploader {
 	return &QiniuUploader{
-		AccessKey: accessKey,
-		SecretKey: secretKey,
-		Bucket:    bucket,
-		Domain:    domain,
+		AccessKey: cfg.Qiniu.AccessKey,
+		SecretKey: cfg.Qiniu.SecretKey,
+		Bucket:    cfg.Qiniu.Bucket,
+		Domain:    cfg.Qiniu.Domain,
 	}
 }
 

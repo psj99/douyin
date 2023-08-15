@@ -39,12 +39,12 @@ func NewRouter(
 		app.POST("/user/register", userHandler.Register)
 		app.POST("/user/login", userHandler.Login)
 		app.GET("/feed")
-		app.POST("/upload", videoHandler.Upload)
 	}
 
 	// 需要登录
 	auth := app.Group("/")
 	auth.Use(middleware.JWTAuth(jwt, logger))
 	auth.GET("/user", userHandler.GetUserInfo)
+	auth.POST("/publish/action", videoHandler.PublishAction)
 	return r
 }

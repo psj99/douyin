@@ -1,5 +1,7 @@
 package convert
 
+import "strconv"
+
 const (
 	base62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 )
@@ -21,4 +23,18 @@ func IntToBase62(n int) string {
 	}
 
 	return string(result)
+}
+
+func StringToUint(s string) uint {
+	tmp, _ := strconv.Atoi(s)
+	return uint(tmp)
+}
+
+func UintToString(val uint) string {
+	return strconv.Itoa(int(val))
+}
+
+func StringToInt64(s string) int64 {
+	val, _ := strconv.Atoi(s)
+	return int64(val)
 }

@@ -15,6 +15,7 @@ import (
 	"douyin/pkg/helper/sid"
 	"douyin/pkg/jwt"
 	"douyin/pkg/log"
+	"douyin/pkg/qiniu"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 )
@@ -25,7 +26,8 @@ func NewApp(config *conf.Config, logger *log.Logger) (*gin.Engine, func(), error
 	jwtJWT := jwt.NewJwt(config)
 	handlerHandler := handler.NewHandler(logger)
 	sidSid := sid.NewSid()
-	serviceService := service.NewService(logger, sidSid, jwtJWT)
+	qiniuUploader := qiniu.NewQiniuUploader(config)
+	serviceService := service.NewService(logger, sidSid, jwtJWT, qiniuUploader)
 	db := repository.NewDB(config)
 	client := repository.NewRedis(config)
 	repositoryRepository := repository.NewRepository(db, client, logger)

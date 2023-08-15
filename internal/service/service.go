@@ -1,10 +1,10 @@
 package service
 
 import (
-	"douyin/pkg/helper/qiniu"
 	"douyin/pkg/helper/sid"
 	"douyin/pkg/jwt"
 	"douyin/pkg/log"
+	"douyin/pkg/qiniu"
 )
 
 type Service struct {

@@ -21,6 +21,7 @@ func main() {
 		zap.String("host", "http://127.0.0.1"+cfg.System.HttpPort))
 
 	//_ = app.Run(cfg.System.HttpPort)
+	//优雅关机
 	http.Run(app, cfg.System.HttpPort)
 	defer cleanup()
 }

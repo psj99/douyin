@@ -12,6 +12,7 @@ import (
 	"douyin/pkg/helper/sid"
 	"douyin/pkg/jwt"
 	"douyin/pkg/log"
+	"douyin/pkg/qiniu"
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 )
@@ -44,5 +45,6 @@ func NewApp(*conf.Config, *log.Logger) (*gin.Engine, func(), error) {
 		router.NewRouter,
 		sid.NewSid,
 		jwt.NewJwt,
+		qiniu.NewQiniuUploader,
 	))
 }
