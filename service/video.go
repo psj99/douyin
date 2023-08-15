@@ -106,7 +106,7 @@ func VideoFeed(ctx *gin.Context, req *request.VideoFeedReq) (resp *response.Vide
 
 		isFollow := false
 		if Me_ID != 0 { // 若登录则检查是否关注
-			isFollow, err = dao.CheckFollower(context.TODO(), user.ID, Me_ID)
+			isFollow, err = dao.CheckFollow(context.TODO(), Me_ID, user.ID)
 			if err != nil {
 				isFollow = false
 				utils.ZapLogger.Errorf("CheckFollow err: %v", err)
@@ -203,7 +203,7 @@ func VideoPublishList(ctx *gin.Context, req *request.VideoPublishListReq) (resp 
 	}
 
 	// 是否关注
-	isFollow, err := dao.CheckFollower(context.TODO(), uint(userID), Me_ID.(uint))
+	isFollow, err := dao.CheckFollow(context.TODO(), Me_ID.(uint), uint(userID))
 	if err != nil {
 		isFollow = false
 		utils.ZapLogger.Errorf("CheckFollow err: %v", err)

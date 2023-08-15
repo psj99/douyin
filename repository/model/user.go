@@ -13,17 +13,17 @@ type User struct {
 	BackgroundImage string
 	Signature       string
 	Works           []Video   `gorm:"foreignKey:UserID"`
-	Favorites       []*Video  `gorm:"many2many:favorite;"`
+	Favorites       []*Video  `gorm:"many2many:favorite"`
 	Comments        []Comment `gorm:"foreignKey:UserID"`
-	Follows         []*User   `gorm:"many2many:follow;"`
-	Followers       []*User   `gorm:"many2many:follow;"`
+	Follows         []*User   `gorm:"many2many:follow;joinForeignKey:user_id;JoinReferences:follow_id"`
+	Followers       []*User   `gorm:"many2many:follow;joinForeignKey:follow_id;JoinReferences:user_id"`
 }
 
-const passWordCost = 12 //密码加密难度
+const passwordCost = 12 //密码加密难度
 
 // SetPassword 设置密码
 func (user *User) SetPassword(password string) error {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), passWordCost)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), passwordCost)
 	if err != nil {
 		return err
 	}

@@ -32,14 +32,14 @@ func CreateUser(ctx context.Context, userInfo *model.User) (user *model.User, er
 }
 
 // 检查是否关注
-func CheckFollower(ctx context.Context, id uint, follower_id uint) (is_follower bool, err error) {
-	if id == follower_id {
+func CheckFollow(ctx context.Context, id uint, follow_id uint) (is_follower bool, err error) {
+	if id == follow_id {
 		return false, nil // 默认自己不关注自己
 	}
 
 	DB := GetDB(ctx)
 	var count int64
-	err = DB.Model(&model.User{}).Preload("Followers").Where("id=? AND follower_id=?", id, follower_id).Count(&count).Error
+	err = DB.Table("follow").Where("user_id=? AND follow_id=?", id, follow_id).Count(&count).Error
 	if err != nil {
 		return false, err
 	} else {
@@ -51,7 +51,7 @@ func CheckFollower(ctx context.Context, id uint, follower_id uint) (is_follower 
 func CheckFavorite(ctx context.Context, id uint, video_id uint) (is_favorite bool, err error) {
 	DB := GetDB(ctx)
 	var count int64
-	err = DB.Model(&model.User{}).Preload("Favorites").Where("id=? AND favorites_id=?", id, video_id).Count(&count).Error
+	err = DB.Table("favorite").Where("user_id=? AND video_id=?", id, video_id).Count(&count).Error
 	if err != nil {
 		return false, err
 	} else {

@@ -122,7 +122,7 @@ func UserInfo(ctx *gin.Context, req *request.UserInfoReq) (resp *response.UserIn
 		utils.ZapLogger.Errorf("ctx.Get (user_id) err: %v", err)
 		return nil, errors.New("无法获取user_id")
 	}
-	isFollow, err := dao.CheckFollower(context.TODO(), uint(userID), Me_ID.(uint))
+	isFollow, err := dao.CheckFollow(context.TODO(), Me_ID.(uint), uint(userID))
 	if err != nil {
 		isFollow = false
 		utils.ZapLogger.Errorf("CheckFollow err: %v", err)
