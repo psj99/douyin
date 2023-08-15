@@ -16,7 +16,14 @@ func JWTAuth(j *jwt.JWT, logger *log.Logger) gin.HandlerFunc {
 		msg := ""
 		// 获取token, 这里接口文件规定了token时query参数传的，没有放在Header里面
 		//token := ctx.GetHeader("Authorization")
-		token := ctx.Query("token")
+		var token string
+		if ctx.Request.Method == "GET" {
+			token = ctx.Query("token")
+		} else {
+			token = ctx.PostForm("token")
+		}
+
+		//token := ctx.Query("token")
 		if token == "" {
 			code = -1
 			msg = "缺少token"

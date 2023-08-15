@@ -36,7 +36,7 @@ func NewApp(config *conf.Config, logger *log.Logger) (*gin.Engine, func(), error
 	userHandler := handler.NewUserHandler(handlerHandler, userService)
 	videoRepository := repository.NewVideoRepository(repositoryRepository)
 	videoService := service.NewVideoService(serviceService, videoRepository)
-	videoHandler := handler.NewVideoHandler(handlerHandler, videoService)
+	videoHandler := handler.NewVideoHandler(handlerHandler, videoService, userService)
 	engine := router.NewRouter(logger, jwtJWT, userHandler, videoHandler)
 	return engine, func() {
 	}, nil

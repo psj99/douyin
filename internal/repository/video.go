@@ -17,13 +17,13 @@ type videoRepository struct {
 }
 
 func (vRepo *videoRepository) GetVideoListById(ctx context.Context, userId uint) (videoList []*model.Video, err error) {
-	err = vRepo.db.Model(&model.Video{}).Where("user_id = ?", userId).Order("create_at desc").Find(videoList).Error
+	err = vRepo.db.Model(&model.Video{}).Where("user_id = ?", userId).Order("created_at desc").Find(&videoList).Error
 	return
 }
 
 func (vRepo *videoRepository) GetVideoList(ctx context.Context, latest int64) (videoList []*model.Video, err error) {
 	latestTime := fmt.Sprintf(time.Unix(latest, 0).Format("2006-01-02 15:04:05"))
-	err = vRepo.db.Model(&model.Video{}).Where("create_at < ?", latestTime).Order("create_at desc").Find(videoList).Error
+	err = vRepo.db.Model(&model.Video{}).Where("created_at < ?", latestTime).Order("created_at desc").Find(&videoList).Error
 	if err != nil {
 		// 交给service层处理，不需要记录日志
 		//vRepo.logger.Error("GetVideoList err:", zap.Error(err))
@@ -34,7 +34,7 @@ func (vRepo *videoRepository) GetVideoList(ctx context.Context, latest int64) (v
 }
 
 func (vRepo *videoRepository) Create(ctx context.Context, video *model.Video) error {
-	err := vRepo.db.Model(&model.User{}).Create(video).Error
+	err := vRepo.db.Model(&model.Video{}).Create(video).Error
 	return err
 }
 

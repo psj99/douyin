@@ -41,7 +41,6 @@ func (vService *videoService) GetFeed(ctx context.Context, latestUnix int64) (vi
 }
 
 func (vService *videoService) PublishVideo(ctx context.Context, file *multipart.FileHeader, userId uint, title string) error {
-	//TODO implement me
 	videoURL, coverURL, err := vService.uploader.UploadFile(ctx, file)
 	if err != nil {
 		vService.logger.Error("七牛云upload发生错误: ", zap.String("err", err.Error()))

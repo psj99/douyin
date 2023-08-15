@@ -5,6 +5,7 @@ import (
 	"douyin/internal/service"
 	"douyin/pkg/helper/convert"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 	"net/http"
 	"time"
 )
@@ -53,11 +54,13 @@ func (videoHandler videoHandler) PublishList(ctx *gin.Context) {
 
 func (videoHandler videoHandler) PublishAction(ctx *gin.Context) {
 
-	title := ctx.Query("title")
+	title, _ := ctx.GetPostForm("title")
+	videoHandler.logger.Info("这里打印一下title", zap.String("title", title))
+
 	// 解析上传的文件
-	file, err := ctx.FormFile("file")
+	file, err := ctx.FormFile("data")
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, resp.PublishActionResp{Response: resp.ResponseErr(err.Error())})
 		return
 	}
 	userId := convert.StringToUint(GetUserIdFromCtx(ctx))
@@ -114,9 +117,10 @@ func (videoHandler videoHandler) Feed(ctx *gin.Context) {
 	})
 }
 
-func NewVideoHandler(handler *Handler, videoService service.VideoService) VideoHandler {
+func NewVideoHandler(handler *Handler, videoService service.VideoService, userService service.UserService) VideoHandler {
 	return &videoHandler{
 		Handler:      handler,
 		videoService: videoService,
+		userService:  userService,
 	}
 }
