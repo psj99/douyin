@@ -12,7 +12,7 @@ mysql:
 
 oss:
   service: "minio"               # 对象存储服务提供者: minio(目前只有minio可用, S3兼容)
-  ossHost: "127.0.0.1"           # 对象存储服务地址 字符串
+  ossHost: "127.0.0.1"           # 对象存储服务地址 (因用于生成对象URL, 请设置为公网地址) 字符串
   ossPort: "9000"                # 对象存储服务端口 字符串
   bucketName: "tiny-douyin"      # 存储桶名 字符串
   accessKeyID: "tiny-douyin"     # 访问ID 字符串
