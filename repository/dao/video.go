@@ -20,3 +20,10 @@ func FindVideosByUpdatedAt(ctx context.Context, updatedAt int64, forward bool, n
 	}
 	return videos, err
 }
+
+// 创建Video
+func CreateVideo(ctx context.Context, videoInfo *model.Video) (video *model.Video, err error) {
+	DB := GetDB(ctx)
+	err = DB.Model(&model.Video{}).Create(videoInfo).Error
+	return videoInfo, err
+}

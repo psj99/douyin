@@ -6,6 +6,15 @@ type VideoFeedResp struct {
 	Video_List []Video `json:"video_list"` // 视频列表
 }
 
+type VideoPublishResp struct {
+	Status
+}
+
+type VideoPublishListResp struct {
+	Status
+	Video_List []Video `json:"video_list"` // 用户发布的视频列表
+}
+
 // 视频列表
 type Video struct {
 	ID             uint   `json:"id"`             // 视频唯一标识

@@ -1,8 +1,8 @@
 package request
 
 type UserRegisterReq struct {
-	Username string `json:"username" form:"username" binding:"required,max=32"` // 注册用户名，最长32个字符
-	Password string `json:"password" form:"password" binding:"required,max=32"` // 密码，最长32个字符
+	Username string `json:"username" form:"username" binding:"required,min=6,max=32"` // 注册用户名 6-32个字符
+	Password string `json:"password" form:"password" binding:"required,min=6,max=32"` // 密码 6-32个字符
 }
 
 type UserLoginReq struct {
@@ -11,6 +11,6 @@ type UserLoginReq struct {
 }
 
 type UserInfoReq struct {
-	User_ID string `json:"user_id"` // 用户id
-	Token   string `json:"token"`   // 用户鉴权token
+	User_ID string `json:"user_id" form:"user_id" binding:"required"` // 用户id
+	Token   string `json:"token" form:"token" binding:"required"`     // 用户鉴权token
 }

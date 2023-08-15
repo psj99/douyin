@@ -33,10 +33,18 @@ func CreateUser(ctx context.Context, userInfo *model.User) (user *model.User, er
 
 // 检查是否关注
 func CheckFollower(ctx context.Context, id uint, follower_id uint) (is_follower bool, err error) {
+	if id == follower_id {
+		return false, nil // 默认自己不关注自己
+	}
+
 	DB := GetDB(ctx)
 	var count int64
 	err = DB.Model(&model.User{}).Preload("Followers").Where("id=? AND follower_id=?", id, follower_id).Count(&count).Error
-	return count > 0, err
+	if err != nil {
+		return false, err
+	} else {
+		return count > 0, nil
+	}
 }
 
 // 检查是否点赞
@@ -44,5 +52,9 @@ func CheckFavorite(ctx context.Context, id uint, video_id uint) (is_favorite boo
 	DB := GetDB(ctx)
 	var count int64
 	err = DB.Model(&model.User{}).Preload("Favorites").Where("id=? AND favorites_id=?", id, video_id).Count(&count).Error
-	return count > 0, err
+	if err != nil {
+		return false, err
+	} else {
+		return count > 0, nil
+	}
 }

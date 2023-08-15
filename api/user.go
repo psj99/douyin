@@ -7,7 +7,6 @@ import (
 	"douyin/utils"
 
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -85,20 +84,30 @@ func POSTUserLogin(ctx *gin.Context) {
 }
 
 func GETUserInfo(ctx *gin.Context) {
-	// 从请求中读取目标用户ID并与token比对
-	target_id := ctx.Query("user_id")
-	user_id, ok := ctx.Get("user_id")
-	if !ok || target_id != strconv.FormatUint(uint64(user_id.(uint)), 10) {
-		utils.ZapLogger.Errorf("UserInfo err: 查询目标与请求用户不同")
-		ctx.JSON(http.StatusUnauthorized, &response.Status{
+	// 绑定JSON到结构体
+	req := &request.UserInfoReq{}
+	err := ctx.ShouldBind(req)
+	if err != nil {
+		utils.ZapLogger.Errorf("ShouldBind err: %v", err)
+		ctx.JSON(http.StatusBadRequest, &response.Status{
 			Status_Code: -1,
-			Status_Msg:  "无权读取",
+			Status_Msg:  "获取失败: " + err.Error(),
 		})
 		return
 	}
 
+	/*// 从请求中读取目标用户ID并与token比对
+	user_id, ok := ctx.Get("user_id")
+	if !ok || req.User_ID != strconv.FormatUint(uint64(user_id.(uint)), 10) {
+		utils.ZapLogger.Errorf("GETUserInfo err: 查询目标与请求用户不同")
+		ctx.JSON(http.StatusUnauthorized, &response.Status{
+			Status_Code: -1,
+			Status_Msg:  "无权获取",
+		})
+		return
+	}*/
+
 	// 调用获取用户信息
-	req := &request.UserInfoReq{User_ID: target_id, Token: ctx.Query("token")}
 	resp, err := service.UserInfo(ctx, req)
 	if err != nil {
 		utils.ZapLogger.Errorf("UserInfo err: %v", err)

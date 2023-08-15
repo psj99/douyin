@@ -25,6 +25,12 @@ func NewRouter() *gin.Engine {
 			userApi.POST("/login/", api.POSTUserLogin)
 			userApi.GET("/", utils.MiddlewareAuth(), api.GETUserInfo) // 应用jwt鉴权中间件
 		}
+
+		publishApi := rootApi.Group("publish")
+		{
+			publishApi.POST("/action/", utils.MiddlewareAuth(), api.POSTVideoPublish) // 应用jwt鉴权中间件
+			publishApi.GET("/list/", utils.MiddlewareAuth(), api.GETVideoPublishList) // 应用jwt鉴权中间件
+		}
 	}
 	return ginRouter
 }
