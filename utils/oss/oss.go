@@ -111,7 +111,7 @@ func UploadVideoStream(ctx context.Context, objectID string, videoStream io.Read
 	videoName, coverName := GetObjectName(objectID)
 
 	// 获取默认封面
-	coverStream, err := conf.Emb.Open("defaultCover.png")
+	coverStream, err := conf.Emb.Open("assets/defaultCover.png")
 	if err != nil {
 		utils.ZapLogger.Errorf("Emb.Open (defaultCover) err: %v", err)
 		return err
