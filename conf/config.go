@@ -48,12 +48,19 @@ type Log struct {
 	MaxBackups   int    `yaml:"maxBackups"`
 	Compress     bool   `yaml:"compress"`
 }
+type Qiniu struct {
+	AccessKey string `yaml:"accessKey"`
+	SecretKey string `yaml:"secretKey"`
+	Bucket    string `yaml:"bucket"`
+	Domain    string `yaml:"domain"`
+}
 
 type Config struct {
 	System *System `yaml:"system"`
 	MySql  *MySql  `yaml:"mysql"`
 	Redis  *Redis  `yaml:"redis"`
 	Log    *Log    `yaml:"log"`
+	Qiniu  *Qiniu  `yaml:"qiniu"`
 }
 
 func NewConfig() *Config {

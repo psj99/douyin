@@ -14,6 +14,7 @@ func NewRouter(
 	logger *log.Logger,
 	jwt *jwt.JWT,
 	userHandler handler.UserHandler,
+	videoHandler handler.VideoHandler,
 ) *gin.Engine {
 	gin.SetMode(gin.DebugMode)
 	r := gin.Default()
@@ -38,6 +39,7 @@ func NewRouter(
 		app.POST("/user/register", userHandler.Register)
 		app.POST("/user/login", userHandler.Login)
 		app.GET("/feed")
+		app.POST("/upload", videoHandler.Upload)
 	}
 
 	// 需要登录

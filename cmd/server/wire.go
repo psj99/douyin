@@ -19,11 +19,13 @@ import (
 var HandlerSet = wire.NewSet(
 	handler.NewHandler,
 	handler.NewUserHandler,
+	handler.NewVideoHandler,
 )
 
 var ServiceSet = wire.NewSet(
 	service.NewService,
 	service.NewUserService,
+	service.NewVideoService,
 )
 
 var RepositorySet = wire.NewSet(
@@ -31,6 +33,7 @@ var RepositorySet = wire.NewSet(
 	repository.NewRedis,
 	repository.NewRepository,
 	repository.NewUserRepository,
+	repository.NewVideoRepository,
 )
 
 func NewApp(*conf.Config, *log.Logger) (*gin.Engine, func(), error) {

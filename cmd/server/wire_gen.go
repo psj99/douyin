@@ -32,15 +32,18 @@ func NewApp(config *conf.Config, logger *log.Logger) (*gin.Engine, func(), error
 	userRepository := repository.NewUserRepository(repositoryRepository)
 	userService := service.NewUserService(serviceService, userRepository)
 	userHandler := handler.NewUserHandler(handlerHandler, userService)
-	engine := router.NewRouter(logger, jwtJWT, userHandler)
+	videoRepository := repository.NewVideoRepository(repositoryRepository)
+	videoService := service.NewVideoService(serviceService, videoRepository)
+	videoHandler := handler.NewVideoHandler(handlerHandler, videoService)
+	engine := router.NewRouter(logger, jwtJWT, userHandler, videoHandler)
 	return engine, func() {
 	}, nil
 }
 
 // wire.go:
 
-var HandlerSet = wire.NewSet(handler.NewHandler, handler.NewUserHandler)
+var HandlerSet = wire.NewSet(handler.NewHandler, handler.NewUserHandler, handler.NewVideoHandler)
 
-var ServiceSet = wire.NewSet(service.NewService, service.NewUserService)
+var ServiceSet = wire.NewSet(service.NewService, service.NewUserService, service.NewVideoService)
 
-var RepositorySet = wire.NewSet(repository.NewDB, repository.NewRedis, repository.NewRepository, repository.NewUserRepository)
+var RepositorySet = wire.NewSet(repository.NewDB, repository.NewRedis, repository.NewRepository, repository.NewUserRepository, repository.NewVideoRepository)
