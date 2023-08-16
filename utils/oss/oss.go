@@ -53,7 +53,7 @@ func UploadVideo(ctx context.Context, objectID string, videoPath string) (err er
 
 	// 切取封面
 	coverPath := filepath.Join(conf.Cfg.System.TempDir, coverName) // 临时文件位置
-	err = utils.GetSnapshot(videoPath, coverPath, 24)              // 取24帧格式第二秒第一帧防止切取黑屏
+	err = utils.GetSnapshot(videoPath, coverPath, 1)               // 防止切取黑屏
 	if err != nil {
 		utils.ZapLogger.Errorf("GetSnapshot err: %v", err)
 		return err
@@ -111,7 +111,7 @@ func UploadVideoStream(ctx context.Context, objectID string, videoStream io.Read
 	videoName, coverName := GetObjectName(objectID)
 
 	// 获取默认封面
-	coverStream, err := conf.Emb.Open("assets/defaultCover.png")
+	coverStream, err := conf.Emb.Open("assets/defaultCover" + coverExt)
 	if err != nil {
 		utils.ZapLogger.Errorf("Emb.Open (defaultCover) err: %v", err)
 		return err
@@ -161,7 +161,7 @@ func UpdateCover(ctx context.Context, objectID string) (err error) {
 
 	// 切取封面
 	coverPath := filepath.Join(conf.Cfg.System.TempDir, coverName) // 临时文件位置
-	err = utils.GetSnapshot(videoPath, coverPath, 24)              // 取24帧格式第二秒第一帧防止切取黑屏
+	err = utils.GetSnapshot(videoPath, coverPath, 1)               // 防止切取黑屏
 	if err != nil {
 		utils.ZapLogger.Errorf("GetSnapshot err: %v", err)
 		return err
