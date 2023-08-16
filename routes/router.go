@@ -11,25 +11,37 @@ import (
 
 func NewRouter() *gin.Engine {
 	ginRouter := gin.Default()
-	rootApi := ginRouter.Group("/douyin")
+	rootAPI := ginRouter.Group("/douyin")
 	{
-		rootApi.GET("/ping/", func(context *gin.Context) {
+		rootAPI.GET("/ping/", func(context *gin.Context) {
 			context.JSON(http.StatusOK, "success")
 		})
 
-		rootApi.GET("/feed/", utils.MiddlewareRateLimit(10, 1), api.GETFeed) // 应用限流中间件 最大10次/秒 每秒恢复1次
+		rootAPI.GET("/feed/", utils.MiddlewareRateLimit(10, 1), api.GETFeed) // 应用限流中间件 最大10次/秒 每秒恢复1次
 
-		userApi := rootApi.Group("user")
+		userAPI := rootAPI.Group("user")
 		{
-			userApi.POST("/register/", api.POSTUserRegister)
-			userApi.POST("/login/", api.POSTUserLogin)
-			userApi.GET("/", utils.MiddlewareAuth(), api.GETUserInfo) // 应用jwt鉴权中间件
+			userAPI.POST("/register/", api.POSTUserRegister)
+			userAPI.POST("/login/", api.POSTUserLogin)
+			userAPI.GET("/", utils.MiddlewareAuth(), api.GETUserInfo) // 应用jwt鉴权中间件
 		}
 
-		publishApi := rootApi.Group("publish")
+		publishAPI := rootAPI.Group("publish")
 		{
-			publishApi.POST("/action/", utils.MiddlewareAuth(), api.POSTPublish) // 应用jwt鉴权中间件
-			publishApi.GET("/list/", utils.MiddlewareAuth(), api.GETPublishList) // 应用jwt鉴权中间件
+			publishAPI.POST("/action/", utils.MiddlewareAuth(), api.POSTPublish) // 应用jwt鉴权中间件
+			publishAPI.GET("/list/", utils.MiddlewareAuth(), api.GETPublishList) // 应用jwt鉴权中间件
+		}
+
+		favoriteAPI := rootAPI.Group("favorite")
+		{
+			favoriteAPI.POST("/action/", utils.MiddlewareAuth(), api.POSTFavorite) // 应用jwt鉴权中间件
+			favoriteAPI.GET("/list/", utils.MiddlewareAuth(), api.GETFavoriteList) // 应用jwt鉴权中间件
+		}
+
+		commentAPI := rootAPI.Group("comment")
+		{
+			commentAPI.POST("/action/", utils.MiddlewareAuth(), api.POSTComment) // 应用jwt鉴权中间件
+			commentAPI.GET("/list/", utils.MiddlewareAuth(), api.GETCommentList) // 应用jwt鉴权中间件
 		}
 	}
 	return ginRouter

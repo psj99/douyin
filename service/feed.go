@@ -118,5 +118,5 @@ func Feed(ctx *gin.Context, req *request.FeedReq) (resp *response.FeedResp, err 
 		resp.Video_List = append(resp.Video_List, videoInfo)
 	}
 
-	return resp, err
+	return resp, nil
 }

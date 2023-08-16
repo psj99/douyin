@@ -57,7 +57,7 @@ func UserRegister(ctx *gin.Context, req *request.UserRegisterReq) (resp *respons
 		return nil, err
 	}
 
-	return &response.UserRegisterResp{User_ID: user.ID, Token: token}, err
+	return &response.UserRegisterResp{User_ID: user.ID, Token: token}, nil
 }
 
 // 用户登录
@@ -87,7 +87,7 @@ func UserLogin(ctx *gin.Context, req *request.UserLoginReq) (resp *response.User
 		return nil, err
 	}
 
-	return &response.UserLoginResp{User_ID: user.ID, Token: token}, err
+	return &response.UserLoginResp{User_ID: user.ID, Token: token}, nil
 }
 
 // 用户信息
@@ -119,7 +119,7 @@ func UserInfo(ctx *gin.Context, req *request.UserInfoReq) (resp *response.UserIn
 	// 是否关注
 	Me_ID, ok := ctx.Get("user_id") // 获取自己
 	if !ok {
-		utils.ZapLogger.Errorf("ctx.Get (user_id) err: %v", err)
+		utils.ZapLogger.Errorf("ctx.Get (user_id) err: inaccessible")
 		return nil, errors.New("无法获取user_id")
 	}
 	isFollow, err := dao.CheckFollow(context.TODO(), Me_ID.(uint), uint(userID))
@@ -140,5 +140,5 @@ func UserInfo(ctx *gin.Context, req *request.UserInfoReq) (resp *response.UserIn
 		Total_Favorited:  strconv.FormatUint(uint64(favoritedCount), 10),
 		Work_Count:       workCount,
 		Favorite_Count:   favoriteCount,
-	}}, err
+	}}, nil
 }

@@ -57,7 +57,7 @@ func Publish(ctx *gin.Context, req *request.PublishReq, file *multipart.FileHead
 		oss.UpdateCover(context.TODO(), videoID) // 不保证自动更新成功
 	}()
 
-	return &response.PublishResp{}, err
+	return &response.PublishResp{}, nil
 }
 
 // 获取发布列表
@@ -65,7 +65,7 @@ func PublishList(ctx *gin.Context, req *request.PublishListReq) (resp *response.
 	// 获取请求用户ID
 	Me_ID, ok := ctx.Get("user_id")
 	if !ok {
-		utils.ZapLogger.Errorf("ctx.Get (user_id) err: %v", err)
+		utils.ZapLogger.Errorf("ctx.Get (user_id) err: inaccessible")
 		return nil, errors.New("无法获取user_id")
 	}
 
@@ -154,5 +154,5 @@ func PublishList(ctx *gin.Context, req *request.PublishListReq) (resp *response.
 		resp.Video_List = append(resp.Video_List, videoInfo)
 	}
 
-	return resp, err
+	return resp, nil
 }

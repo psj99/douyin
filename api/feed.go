@@ -26,7 +26,7 @@ func GETFeed(ctx *gin.Context) {
 	req := &request.FeedReq{Latest_Time: latest_time, Token: ctx.Query("token")}
 	resp, err := service.Feed(ctx, req)
 	if err != nil {
-		utils.ZapLogger.Errorf("VideoFeed err: %v", err)
+		utils.ZapLogger.Errorf("Feed err: %v", err)
 		ctx.JSON(http.StatusInternalServerError, &response.Status{
 			Status_Code: -1,
 			Status_Msg:  "获取失败: " + err.Error(),
@@ -34,7 +34,7 @@ func GETFeed(ctx *gin.Context) {
 		return
 	}
 
-	// 读取成功
+	// 获取成功
 	status := response.Status{Status_Code: 0, Status_Msg: "获取成功"}
 	resp.Status = status
 	ctx.JSON(http.StatusOK, resp)

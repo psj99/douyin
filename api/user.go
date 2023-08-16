@@ -118,7 +118,7 @@ func GETUserInfo(ctx *gin.Context) {
 		return
 	}
 
-	// 读取成功
+	// 获取成功
 	status := response.Status{Status_Code: 0, Status_Msg: "获取成功"}
 	resp.Status = status
 	ctx.JSON(http.StatusOK, resp)
