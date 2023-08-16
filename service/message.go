@@ -64,11 +64,17 @@ func MessageList(ctx *gin.Context, req *request.MessageListReq) (resp *response.
 	}
 
 	// 读取消息列表
-	messages, err := dao.FindMessagesBy_From_To_ID(context.TODO(), Me_ID.(uint), uint(to_user_id))
-	if err != nil {
+	outMessages, err1 := dao.FindMessagesBy_From_To_ID(context.TODO(), Me_ID.(uint), uint(to_user_id), int64(req.Pre_Msg_Time), true, -1) // 查找从某刻起新消息 不限制数量
+	if err1 != nil {
 		utils.ZapLogger.Errorf("FindMessagesBy_From_To_ID err: %v", err)
-		return nil, err
+		return nil, err1
 	}
+	inMessages, err2 := dao.FindMessagesBy_From_To_ID(context.TODO(), uint(to_user_id), Me_ID.(uint), int64(req.Pre_Msg_Time), true, -1) // 查找从某刻起新消息 不限制数量
+	if err2 != nil {
+		utils.ZapLogger.Errorf("FindMessagesBy_From_To_ID err: %v", err)
+		return nil, err2
+	}
+	messages := append(outMessages, inMessages...)
 
 	resp = &response.MessageListResp{}
 	for _, message := range messages {
@@ -77,7 +83,8 @@ func MessageList(ctx *gin.Context, req *request.MessageListReq) (resp *response.
 			To_User_ID:   message.ToUserID,
 			From_User_ID: message.FromUserID,
 			Content:      message.Content,
-			Create_Time:  message.CreatedAt.Format("2006-01-02 15:04:05"),
+			Create_Time:  uint(message.CreatedAt.Unix() * 1000), // 消息发送时间 API文档有误 实为毫秒数时间戳
+			// Create_Time:  message.CreatedAt.Format("2006-01-02 15:04:05"),
 		}
 
 		resp.Message_List = append(resp.Message_List, messageInfo)

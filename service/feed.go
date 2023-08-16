@@ -40,7 +40,7 @@ func Feed(ctx *gin.Context, req *request.FeedReq) (resp *response.FeedResp, err 
 
 	// 临时方案 亟待优化 //TODO
 	resp = &response.FeedResp{
-		Next_Time: 0, // 本次返回的视频中发布最早的时间 默认为无效
+		// Next_Time: 0, // 本次返回的视频中发布最早的时间 默认为不发送
 	}
 	if len(videos) > 0 { // 如果查找结果中有视频
 		resp.Next_Time = uint(videos[len(videos)-1].UpdatedAt.Unix() * 1000) // 更新该时间戳 API文档有误 请求实为毫秒时间戳 故在此转换

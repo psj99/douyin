@@ -9,6 +9,7 @@ import (
 	"context"
 	"errors"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -141,8 +142,31 @@ func FriendList(ctx *gin.Context, req *request.FriendListReq) (resp *response.Fr
 				continue // 跳过本用户
 			}
 
+			// 获取上一次消息
+			friendUser := response.FriendUser{User: *followInfo}
+			outMessage, err1 := dao.FindMessagesBy_From_To_ID(context.TODO(), user.ID, follow.ID, time.Now().Unix(), false, 1)
+			inMessage, err2 := dao.FindMessagesBy_From_To_ID(context.TODO(), follow.ID, user.ID, time.Now().Unix(), false, 1)
+			if (err1 == nil && err2 == nil) && (len(outMessage) > 0 && len(inMessage) > 0) {
+				if outMessage[0].CreatedAt.Unix() > inMessage[0].CreatedAt.Unix() {
+					friendUser.Message = outMessage[0].Content
+					friendUser.Msg_Type = 1 // 目标用户发送的消息
+				} else {
+					friendUser.Message = inMessage[0].Content
+					friendUser.Msg_Type = 0 // 目标用户接收的消息
+				}
+			} else if ((err1 == nil) && (len(outMessage) > 0)) && ((err2 != nil) || (len(inMessage) == 0)) {
+				friendUser.Message = outMessage[0].Content
+				friendUser.Msg_Type = 1 // 目标用户发送的消息
+			} else if ((err1 != nil) || (len(outMessage) == 0)) && ((err2 == nil) && (len(inMessage) > 0)) {
+				friendUser.Message = inMessage[0].Content
+				friendUser.Msg_Type = 0 // 目标用户接收的消息
+			} else {
+				// friendUser.Message = "" // 默认为不发送
+				friendUser.Msg_Type = 2 // 无消息往来时根据API文档强制要求将msgType赋值
+			}
+
 			// 加入响应列表
-			resp.User_List = append(resp.User_List, *followInfo)
+			resp.User_List = append(resp.User_List, friendUser)
 		}
 	}
 

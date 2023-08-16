@@ -47,5 +47,12 @@ type Message struct {
 	To_User_ID   uint   `json:"to_user_id"`   // 消息接收者id
 	From_User_ID uint   `json:"from_user_id"` // 消息发送者id
 	Content      string `json:"content"`      // 消息内容
-	Create_Time  string `json:"create_time"`  // 消息发送时间 yyyy-MM-dd HH:MM:ss API文档疑有误
+	Create_Time  uint   `json:"create_time"`  // 消息发送时间 API文档有误 实为毫秒数时间戳
+}
+
+// 用户(好友)信息
+type FriendUser struct {
+	User
+	Message  string `json:"message"` // 和该好友的最新聊天消息
+	Msg_Type uint   `json:"msgType"` // message消息的类型，0 => 当前请求用户接收的消息， 1 => 当前请求用户发送的消息
 }

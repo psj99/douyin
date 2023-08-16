@@ -73,6 +73,9 @@ func GETMessageList(ctx *gin.Context) {
 		return
 	}
 
+	// 处理Pre_Msg_Time
+	req.Pre_Msg_Time = req.Pre_Msg_Time / 1000 // API文档有误 请求实为毫秒时间戳 故在此转换
+
 	// 调用获取消息记录
 	resp, err := service.MessageList(ctx, req)
 	if err != nil {
