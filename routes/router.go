@@ -43,6 +43,20 @@ func NewRouter() *gin.Engine {
 			commentAPI.POST("/action/", utils.MiddlewareAuth(), api.POSTComment) // 应用jwt鉴权中间件
 			commentAPI.GET("/list/", utils.MiddlewareAuth(), api.GETCommentList) // 应用jwt鉴权中间件
 		}
+
+		relationAPI := rootAPI.Group("relation")
+		{
+			relationAPI.POST("/action/", utils.MiddlewareAuth(), api.POSTFollow)            // 应用jwt鉴权中间件
+			relationAPI.GET("/follow/list/", utils.MiddlewareAuth(), api.GETFollowList)     // 应用jwt鉴权中间件
+			relationAPI.GET("/follower/list/", utils.MiddlewareAuth(), api.GETFollowerList) // 应用jwt鉴权中间件
+			relationAPI.GET("/friend/list/", utils.MiddlewareAuth(), api.GETFriendList)     // 应用jwt鉴权中间件
+		}
+
+		messageAPI := rootAPI.Group("message")
+		{
+			messageAPI.POST("/action/", utils.MiddlewareAuth(), api.POSTMessage) // 应用jwt鉴权中间件
+			messageAPI.GET("/chat/", utils.MiddlewareAuth(), api.GETMessageList) // 应用jwt鉴权中间件
+		}
 	}
 	return ginRouter
 }

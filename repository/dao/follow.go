@@ -1,21 +1,36 @@
 package dao
 
 import (
+	"douyin/repository/model"
+
 	"context"
+
+	"gorm.io/gorm"
 )
 
+// 关注
+func CreateFollow(ctx context.Context, user_id uint, follow_id uint) (err error) {
+	DB := GetDB(ctx)
+	user := &model.User{Model: gorm.Model{ID: user_id}}
+	follow := &model.User{Model: gorm.Model{ID: follow_id}}
+	return DB.Model(user).Association("Follows").Append(follow)
+}
+
+// 取消关注
+func DeleteFollow(ctx context.Context, user_id uint, follow_id uint) (err error) {
+	DB := GetDB(ctx)
+	user := &model.User{Model: gorm.Model{ID: user_id}}
+	follow := &model.User{Model: gorm.Model{ID: follow_id}}
+	return DB.Model(user).Association("Follows").Delete(follow)
+}
+
 // 检查是否关注
-func CheckFollow(ctx context.Context, user_id uint, follow_id uint) (is_follower bool, err error) {
+func CheckFollow(ctx context.Context, user_id uint, follow_id uint) (is_follower bool) {
 	if user_id == follow_id {
-		return false, nil // 默认自己不关注自己
+		return false // 默认自己不关注自己
 	}
 
 	DB := GetDB(ctx)
-	var count int64
-	err = DB.Table("follow").Where("user_id=? AND follow_id=?", user_id, follow_id).Count(&count).Error
-	if err != nil {
-		return false, err
-	} else {
-		return count > 0, nil
-	}
+	user := &model.User{Model: gorm.Model{ID: user_id}}
+	return DB.Model(user).Where("id=?", follow_id).Association("Follows").Count() > 0
 }

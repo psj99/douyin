@@ -99,13 +99,7 @@ func FavoriteList(ctx *gin.Context, req *request.FavoriteListReq) (resp *respons
 		videoInfo.Cover_URL = coverURL
 
 		// 检查是否点赞
-		isFavorite := false
-		isFavorite, err = dao.CheckFavorite(context.TODO(), Me_ID.(uint), video.ID)
-		if err != nil {
-			isFavorite = false
-			utils.ZapLogger.Errorf("CheckFavorite err: %v", err)
-		}
-		videoInfo.Is_Favorite = isFavorite
+		videoInfo.Is_Favorite = dao.CheckFavorite(context.TODO(), Me_ID.(uint), video.ID)
 
 		// 获取作者信息
 		author, err := dao.FindUserByID(context.TODO(), video.UserID)
@@ -125,11 +119,7 @@ func FavoriteList(ctx *gin.Context, req *request.FavoriteListReq) (resp *respons
 		}
 
 		// 是否关注
-		isFollow, err := dao.CheckFollow(context.TODO(), Me_ID.(uint), uint(author.ID))
-		if err != nil {
-			isFollow = false
-			utils.ZapLogger.Errorf("CheckFollow err: %v", err)
-		}
+		isFollow := dao.CheckFollow(context.TODO(), Me_ID.(uint), uint(author.ID))
 
 		// 视频信息中加入作者信息
 		videoInfo.Author = response.User{

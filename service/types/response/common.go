@@ -40,3 +40,12 @@ type Comment struct {
 	Content     string `json:"content"`     // 评论内容
 	Create_Date string `json:"create_date"` // 评论发布日期，格式 mm-dd
 }
+
+// 聊天信息
+type Message struct {
+	ID           uint   `json:"id"`           // 消息id
+	To_User_ID   uint   `json:"to_user_id"`   // 消息接收者id
+	From_User_ID uint   `json:"from_user_id"` // 消息发送者id
+	Content      string `json:"content"`      // 消息内容
+	Create_Time  string `json:"create_time"`  // 消息发送时间 yyyy-MM-dd HH:MM:ss API文档疑有误
+}

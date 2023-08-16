@@ -95,11 +95,7 @@ func PublishList(ctx *gin.Context, req *request.PublishListReq) (resp *response.
 	}
 
 	// 是否关注
-	isFollow, err := dao.CheckFollow(context.TODO(), Me_ID.(uint), uint(userID))
-	if err != nil {
-		isFollow = false
-		utils.ZapLogger.Errorf("CheckFollow err: %v", err)
-	}
+	isFollow := dao.CheckFollow(context.TODO(), Me_ID.(uint), uint(userID))
 
 	// 作者信息
 	userInfo := response.User{
@@ -139,13 +135,7 @@ func PublishList(ctx *gin.Context, req *request.PublishListReq) (resp *response.
 		videoInfo.Cover_URL = coverURL
 
 		// 检查是否点赞
-		isFavorite := false
-		isFavorite, err = dao.CheckFavorite(context.TODO(), Me_ID.(uint), video.ID)
-		if err != nil {
-			isFavorite = false
-			utils.ZapLogger.Errorf("CheckFavorite err: %v", err)
-		}
-		videoInfo.Is_Favorite = isFavorite
+		videoInfo.Is_Favorite = dao.CheckFavorite(context.TODO(), Me_ID.(uint), video.ID)
 
 		// 视频信息中加入作者信息
 		videoInfo.Author = userInfo

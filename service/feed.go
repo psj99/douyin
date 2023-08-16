@@ -69,11 +69,7 @@ func Feed(ctx *gin.Context, req *request.FeedReq) (resp *response.FeedResp, err 
 		// 检查是否点赞
 		isFavorite := false
 		if Me_ID != 0 {
-			isFavorite, err = dao.CheckFavorite(context.TODO(), Me_ID, video.ID)
-			if err != nil {
-				isFavorite = false
-				utils.ZapLogger.Errorf("CheckFavorite err: %v", err)
-			}
+			isFavorite = dao.CheckFavorite(context.TODO(), Me_ID, video.ID)
 		}
 		videoInfo.Is_Favorite = isFavorite
 
@@ -103,11 +99,7 @@ func Feed(ctx *gin.Context, req *request.FeedReq) (resp *response.FeedResp, err 
 
 		isFollow := false
 		if Me_ID != 0 { // 若登录则检查是否关注
-			isFollow, err = dao.CheckFollow(context.TODO(), Me_ID, user.ID)
-			if err != nil {
-				isFollow = false
-				utils.ZapLogger.Errorf("CheckFollow err: %v", err)
-			}
+			isFollow = dao.CheckFollow(context.TODO(), Me_ID, user.ID)
 		}
 		userInfo.Is_Follow = isFollow
 

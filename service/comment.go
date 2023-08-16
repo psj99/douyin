@@ -67,11 +67,7 @@ func Comment(ctx *gin.Context, req *request.CommentReq) (resp *response.CommentR
 			}
 
 			// 是否关注
-			isFollow, err := dao.CheckFollow(context.TODO(), Me_ID.(uint), Me_ID.(uint))
-			if err != nil {
-				isFollow = false
-				utils.ZapLogger.Errorf("CheckFollow err: %v", err)
-			}
+			isFollow := dao.CheckFollow(context.TODO(), Me_ID.(uint), Me_ID.(uint))
 
 			userInfo := response.User{
 				ID:               author.ID,
@@ -164,11 +160,7 @@ func CommentList(ctx *gin.Context, req *request.CommentListReq) (resp *response.
 			}
 
 			// 是否关注
-			isFollow, err := dao.CheckFollow(context.TODO(), Me_ID.(uint), author.ID)
-			if err != nil {
-				isFollow = false
-				utils.ZapLogger.Errorf("CheckFollow err: %v", err)
-			}
+			isFollow := dao.CheckFollow(context.TODO(), Me_ID.(uint), author.ID)
 
 			userInfo := response.User{
 				ID:               author.ID,
