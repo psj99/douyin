@@ -23,7 +23,7 @@ func GETVideoFeed(ctx *gin.Context) {
 	}
 
 	// 调用获取用户信息
-	req := &request.VideoFeedReq{Latest_Time: latest_time, Token: ctx.Query("token")}
+	req := &request.FeedReq{Latest_Time: latest_time, Token: ctx.Query("token")}
 	resp, err := service.VideoFeed(ctx, req)
 	if err != nil {
 		utils.ZapLogger.Errorf("VideoFeed err: %v", err)
@@ -42,7 +42,7 @@ func GETVideoFeed(ctx *gin.Context) {
 
 func POSTVideoPublish(ctx *gin.Context) {
 	// 绑定JSON到结构体
-	req := &request.VideoPublishReq{}
+	req := &request.PublishReq{}
 	err := ctx.ShouldBind(req)
 	if err != nil {
 		utils.ZapLogger.Errorf("ShouldBind err: %v", err)
@@ -83,7 +83,7 @@ func POSTVideoPublish(ctx *gin.Context) {
 
 func GETVideoPublishList(ctx *gin.Context) {
 	// 绑定JSON到结构体
-	req := &request.VideoPublishListReq{}
+	req := &request.PublishListReq{}
 	err := ctx.ShouldBind(req)
 	if err != nil {
 		utils.ZapLogger.Errorf("ShouldBind err: %v", err)

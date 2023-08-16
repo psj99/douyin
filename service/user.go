@@ -57,7 +57,7 @@ func UserRegister(ctx *gin.Context, req *request.UserRegisterReq) (resp *respons
 		return nil, err
 	}
 
-	return &response.UserRegisterResp{User_Id: user.ID, Token: token}, err
+	return &response.UserRegisterResp{User_ID: user.ID, Token: token}, err
 }
 
 // 用户登录
@@ -87,7 +87,7 @@ func UserLogin(ctx *gin.Context, req *request.UserLoginReq) (resp *response.User
 		return nil, err
 	}
 
-	return &response.UserLoginResp{User_Id: user.ID, Token: token}, err
+	return &response.UserLoginResp{User_ID: user.ID, Token: token}, err
 }
 
 // 用户信息

@@ -17,7 +17,7 @@ import (
 )
 
 // 视频流
-func VideoFeed(ctx *gin.Context, req *request.VideoFeedReq) (resp *response.VideoFeedResp, err error) {
+func VideoFeed(ctx *gin.Context, req *request.FeedReq) (resp *response.FeedResp, err error) {
 	// 获取请求用户ID 默认为0(不存在)
 	var Me_ID uint = 0
 	if req.Token != "" {
@@ -42,7 +42,7 @@ func VideoFeed(ctx *gin.Context, req *request.VideoFeedReq) (resp *response.Vide
 	}
 
 	// 临时方案 亟待优化 //TODO
-	resp = &response.VideoFeedResp{
+	resp = &response.FeedResp{
 		Next_Time: 0, // 本次返回的视频中发布最早的时间 默认为无效
 	}
 	if len(videos) > 0 { // 如果查找结果中有视频
@@ -125,7 +125,7 @@ func VideoFeed(ctx *gin.Context, req *request.VideoFeedReq) (resp *response.Vide
 }
 
 // 发布视频
-func VideoPublish(ctx *gin.Context, req *request.VideoPublishReq, file *multipart.FileHeader) (resp *response.VideoPublishResp, err error) {
+func VideoPublish(ctx *gin.Context, req *request.PublishReq, file *multipart.FileHeader) (resp *response.PublishResp, err error) {
 	// 首先尝试打开文件
 	videoStream, err := file.Open()
 	if err != nil {
@@ -165,11 +165,11 @@ func VideoPublish(ctx *gin.Context, req *request.VideoPublishReq, file *multipar
 		oss.UpdateCover(context.TODO(), videoID) // 不保证自动更新成功
 	}()
 
-	return &response.VideoPublishResp{}, err
+	return &response.PublishResp{}, err
 }
 
 // 获取发布列表
-func VideoPublishList(ctx *gin.Context, req *request.VideoPublishListReq) (resp *response.VideoPublishListResp, err error) {
+func VideoPublishList(ctx *gin.Context, req *request.PublishListReq) (resp *response.PublishListResp, err error) {
 	// 获取请求用户ID
 	Me_ID, ok := ctx.Get("user_id")
 	if !ok {
@@ -226,7 +226,7 @@ func VideoPublishList(ctx *gin.Context, req *request.VideoPublishListReq) (resp 
 
 	// 读取视频列表
 	// 临时方案 亟待优化 //TODO
-	resp = &response.VideoPublishListResp{}
+	resp = &response.PublishListResp{}
 	for _, video := range user.Works {
 		// 读取视频信息
 		videoInfo := response.Video{
