@@ -17,7 +17,7 @@ func NewRouter() *gin.Engine {
 			context.JSON(http.StatusOK, "success")
 		})
 
-		rootApi.GET("/feed/", utils.MiddlewareRateLimit(10, 1), api.GETVideoFeed) // 应用限流中间件 最大10次/秒 每秒恢复1次
+		rootApi.GET("/feed/", utils.MiddlewareRateLimit(10, 1), api.GETFeed) // 应用限流中间件 最大10次/秒 每秒恢复1次
 
 		userApi := rootApi.Group("user")
 		{
@@ -28,8 +28,8 @@ func NewRouter() *gin.Engine {
 
 		publishApi := rootApi.Group("publish")
 		{
-			publishApi.POST("/action/", utils.MiddlewareAuth(), api.POSTVideoPublish) // 应用jwt鉴权中间件
-			publishApi.GET("/list/", utils.MiddlewareAuth(), api.GETVideoPublishList) // 应用jwt鉴权中间件
+			publishApi.POST("/action/", utils.MiddlewareAuth(), api.POSTPublish) // 应用jwt鉴权中间件
+			publishApi.GET("/list/", utils.MiddlewareAuth(), api.GETPublishList) // 应用jwt鉴权中间件
 		}
 	}
 	return ginRouter
