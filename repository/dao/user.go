@@ -12,7 +12,7 @@ import (
 func FindUserByID(ctx context.Context, id uint) (user *model.User, err error) {
 	DB := GetDB(ctx)
 	user = &model.User{}
-	err = DB.Model(&model.User{}).Where("id=?", id).Preload(clause.Associations).First(user).Error
+	err = DB.Model(&model.User{}).Where("id=?", id).Preload(clause.Associations).Preload("Works.Favorited").Preload("Works.Comments").Preload("Favorites.Favorited").Preload("Favorites.Comments").First(user).Error
 	return user, err
 }
 
@@ -20,7 +20,7 @@ func FindUserByID(ctx context.Context, id uint) (user *model.User, err error) {
 func FindUserByUsername(ctx context.Context, username string) (user *model.User, err error) {
 	DB := GetDB(ctx)
 	user = &model.User{}
-	err = DB.Model(&model.User{}).Where("username=?", username).Preload(clause.Associations).First(user).Error
+	err = DB.Model(&model.User{}).Where("username=?", username).Preload(clause.Associations).Preload("Works.Favorited").Preload("Works.Comments").Preload("Favorites.Favorited").Preload("Favorites.Comments").First(user).Error
 	return user, err
 }
 
