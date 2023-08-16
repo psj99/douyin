@@ -9,6 +9,13 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+// 创建Video
+func CreateVideo(ctx context.Context, videoInfo *model.Video) (video *model.Video, err error) {
+	DB := GetDB(ctx)
+	err = DB.Model(&model.Video{}).Create(videoInfo).Error
+	return videoInfo, err
+}
+
 // 根据更新时间获取视频列表
 func FindVideosByUpdatedAt(ctx context.Context, updatedAt int64, forward bool, num int) (videos []model.Video, err error) {
 	DB := GetDB(ctx)
@@ -19,11 +26,4 @@ func FindVideosByUpdatedAt(ctx context.Context, updatedAt int64, forward bool, n
 		err = DB.Model(&model.Video{}).Where("updated_at<?", stop).Order("updated_at desc").Limit(num).Preload(clause.Associations).Find(&videos).Error
 	}
 	return videos, err
-}
-
-// 创建Video
-func CreateVideo(ctx context.Context, videoInfo *model.Video) (video *model.Video, err error) {
-	DB := GetDB(ctx)
-	err = DB.Model(&model.Video{}).Create(videoInfo).Error
-	return videoInfo, err
 }

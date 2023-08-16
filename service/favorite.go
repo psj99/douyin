@@ -14,6 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// 点赞/取消赞
 func Favorite(ctx *gin.Context, req *request.FavoriteReq) (resp *response.FavoriteResp, err error) {
 	// 获取请求用户ID
 	Me_ID, ok := ctx.Get("user_id")
@@ -54,6 +55,7 @@ func Favorite(ctx *gin.Context, req *request.FavoriteReq) (resp *response.Favori
 	return &response.FavoriteResp{}, nil
 }
 
+// 获取喜欢列表
 func FavoriteList(ctx *gin.Context, req *request.FavoriteListReq) (resp *response.FavoriteListResp, err error) {
 	// 获取请求用户ID
 	Me_ID, ok := ctx.Get("user_id")

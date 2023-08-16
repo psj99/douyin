@@ -6,23 +6,11 @@ import (
 	"context"
 )
 
-// 检查是否点赞
-func CheckFavorite(ctx context.Context, id uint, video_id uint) (is_favorite bool, err error) {
-	DB := GetDB(ctx)
-	var count int64
-	err = DB.Table("favorite").Where("user_id=? AND video_id=?", id, video_id).Count(&count).Error
-	if err != nil {
-		return false, err
-	} else {
-		return count > 0, nil
-	}
-}
-
 // 点赞
-func CreateFavorite(ctx context.Context, id uint, video_id uint) (err error) {
+func CreateFavorite(ctx context.Context, user_id uint, video_id uint) (err error) {
 	DB := GetDB(ctx)
 	user := &model.User{}
-	err = DB.Model(&model.User{}).Where("id=?", id).First(user).Error
+	err = DB.Model(&model.User{}).Where("id=?", user_id).First(user).Error
 	if err != nil {
 		return err
 	}
@@ -35,10 +23,10 @@ func CreateFavorite(ctx context.Context, id uint, video_id uint) (err error) {
 }
 
 // 取消点赞
-func DeleteFavorite(ctx context.Context, id uint, video_id uint) (err error) {
+func DeleteFavorite(ctx context.Context, user_id uint, video_id uint) (err error) {
 	DB := GetDB(ctx)
 	user := &model.User{}
-	err = DB.Model(&model.User{}).Where("id=?", id).First(user).Error
+	err = DB.Model(&model.User{}).Where("id=?", user_id).First(user).Error
 	if err != nil {
 		return err
 	}
@@ -48,4 +36,16 @@ func DeleteFavorite(ctx context.Context, id uint, video_id uint) (err error) {
 		return err
 	}
 	return DB.Model(user).Association("Favorites").Delete(video)
+}
+
+// 检查是否点赞
+func CheckFavorite(ctx context.Context, user_id uint, video_id uint) (is_favorite bool, err error) {
+	DB := GetDB(ctx)
+	var count int64
+	err = DB.Table("favorite").Where("user_id=? AND video_id=?", user_id, video_id).Count(&count).Error
+	if err != nil {
+		return false, err
+	} else {
+		return count > 0, nil
+	}
 }

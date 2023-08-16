@@ -8,7 +8,14 @@ import (
 	"gorm.io/gorm/clause"
 )
 
-// 根据用户id找到用户
+// 创建User
+func CreateUser(ctx context.Context, userInfo *model.User) (user *model.User, err error) {
+	DB := GetDB(ctx)
+	err = DB.Model(&model.User{}).Create(userInfo).Error
+	return userInfo, err
+}
+
+// 根据用户ID找到用户
 func FindUserByID(ctx context.Context, id uint) (user *model.User, err error) {
 	DB := GetDB(ctx)
 	user = &model.User{}
@@ -22,11 +29,4 @@ func FindUserByUsername(ctx context.Context, username string) (user *model.User,
 	user = &model.User{}
 	err = DB.Model(&model.User{}).Where("username=?", username).Preload(clause.Associations).Preload("Works.Favorited").Preload("Works.Comments").Preload("Favorites.Favorited").Preload("Favorites.Comments").First(user).Error
 	return user, err
-}
-
-// 创建User
-func CreateUser(ctx context.Context, userInfo *model.User) (user *model.User, err error) {
-	DB := GetDB(ctx)
-	err = DB.Model(&model.User{}).Create(userInfo).Error
-	return userInfo, err
 }
