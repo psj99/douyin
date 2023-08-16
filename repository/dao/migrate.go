@@ -12,7 +12,7 @@ import (
 // 为了保护数据，并不支持改变已有的字段类型或删除未被使用的字段
 func MakeMigrate() {
 	DB := GetDB(context.Background())
-	err := DB.Set("gorm:table_options", "charset=utf8mb4").AutoMigrate(&model.User{}, &model.Video{}, &model.Comment{})
+	err := DB.Set("gorm:table_options", "charset=utf8mb4").AutoMigrate(&model.User{}, &model.Video{}, &model.Comment{}, &model.Message{})
 	if err != nil {
 		panic("数据表迁移失败")
 	} else {

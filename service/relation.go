@@ -13,6 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// 关注/取消关注
 func Follow(ctx *gin.Context, req *request.FollowReq) (resp *response.FollowResp, err error) {
 	// 获取请求用户ID
 	Me_ID, ok := ctx.Get("user_id")
@@ -54,6 +55,7 @@ func Follow(ctx *gin.Context, req *request.FollowReq) (resp *response.FollowResp
 	return &response.FollowResp{}, nil
 }
 
+// 获取关注列表
 func FollowList(ctx *gin.Context, req *request.FollowListReq) (resp *response.FollowListResp, err error) {
 	// 获取目标用户信息
 	userID, err := strconv.ParseUint(req.User_ID, 10, 64)
@@ -83,6 +85,7 @@ func FollowList(ctx *gin.Context, req *request.FollowListReq) (resp *response.Fo
 	return resp, nil
 }
 
+// 获取粉丝列表
 func FollowerList(ctx *gin.Context, req *request.FollowerListReq) (resp *response.FollowerListResp, err error) {
 	// 获取目标用户信息
 	userID, err := strconv.ParseUint(req.User_ID, 10, 64)
@@ -112,6 +115,7 @@ func FollowerList(ctx *gin.Context, req *request.FollowerListReq) (resp *respons
 	return resp, nil
 }
 
+// 获取好友列表
 func FriendList(ctx *gin.Context, req *request.FriendListReq) (resp *response.FriendListResp, err error) {
 	// 获取目标用户信息
 	userID, err := strconv.ParseUint(req.User_ID, 10, 64)

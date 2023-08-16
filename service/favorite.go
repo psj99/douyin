@@ -23,18 +23,19 @@ func Favorite(ctx *gin.Context, req *request.FavoriteReq) (resp *response.Favori
 		return nil, errors.New("无法获取user_id")
 	}
 
-	// 存储点赞信息
-	action_type, err := strconv.ParseUint(req.Action_Type, 10, 64)
-	if err != nil {
-		utils.ZapLogger.Errorf("ParseUint err: %v", err)
-		return nil, err
-	}
+	// 获取目标视频ID
 	video_id, err := strconv.ParseUint(req.Video_ID, 10, 64)
 	if err != nil {
 		utils.ZapLogger.Errorf("ParseUint err: %v", err)
 		return nil, err
 	}
 
+	// 存储点赞信息
+	action_type, err := strconv.ParseUint(req.Action_Type, 10, 64)
+	if err != nil {
+		utils.ZapLogger.Errorf("ParseUint err: %v", err)
+		return nil, err
+	}
 	if action_type == 1 {
 		err = dao.CreateFavorite(context.TODO(), Me_ID.(uint), uint(video_id))
 		if err != nil {

@@ -17,6 +17,7 @@ type User struct {
 	Comments        []Comment `gorm:"foreignKey:UserID"`
 	Follows         []*User   `gorm:"many2many:follow;joinForeignKey:user_id;JoinReferences:follow_id"`
 	Followers       []*User   `gorm:"many2many:follow;joinForeignKey:follow_id;JoinReferences:user_id"`
+	Messages        []Message `gorm:"foreignKey:FromUserID"`
 }
 
 const passwordCost = 12 //密码加密难度
