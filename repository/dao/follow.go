@@ -4,12 +4,19 @@ import (
 	"douyin/repository/model"
 
 	"context"
+	"errors"
 
 	"gorm.io/gorm"
 )
 
+var ErrorSelfFollow = errors.New("禁止自己关注自己")
+
 // 关注
 func CreateFollow(ctx context.Context, user_id uint, follow_id uint) (err error) {
+	if user_id == follow_id {
+		return ErrorSelfFollow
+	}
+
 	DB := GetDB(ctx)
 	user := &model.User{Model: gorm.Model{ID: user_id}}
 	follow := &model.User{Model: gorm.Model{ID: follow_id}}
