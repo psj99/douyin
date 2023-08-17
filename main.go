@@ -5,12 +5,14 @@ import (
 	"douyin/repository/dao"
 	"douyin/routes"
 	"douyin/utils"
+	"douyin/utils/oss"
 )
 
 func init() {
 	conf.InitConfig()
 	utils.InitLogger()
-	dao.MySQLInit()
+	dao.InitMySQL()
+	oss.InitOSS()
 }
 
 func main() {
@@ -20,5 +22,5 @@ func main() {
 	// dao.MakeMigrate()
 
 	r := routes.NewRouter()
-	_ = r.Run(conf.Cfg.System.HttpPort)
+	_ = r.Run(":" + conf.Cfg.System.HttpPort)
 }

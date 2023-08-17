@@ -2,4 +2,7 @@
 .vscode
 
 conf/locale/config.yaml
+temp
 log
+
+__debug_bin*

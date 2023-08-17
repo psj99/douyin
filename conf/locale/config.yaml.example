@@ -1,35 +1,30 @@
 system:
-  domain: douyin
-  version: v0.1
-  appEnv: "debug"
-  httpPort: ":8080"
-  host: "localhost"
+  httpPort: "8080"               # http服务运行端口 字符串
+  tempDir: "./temp"              # 临时目录路径 字符串
 
 mysql:
-  dbHost: "127.0.0.1"
-  dbPort: "3306"
-  dbName: "tiny_douyin"
-  userName: "root"
-  password: "tiny-douyin"
-  charset: "utf8mb4"
+  dbHost: "127.0.0.1"            # MySQL数据库地址 字符串
+  dbPort: "3306"                 # MySQL数据库端口 字符串
+  dbName: "tiny_douyin"          # MySQL数据库名 字符串
+  username: "root"               # MySQL用户名 字符串
+  password: "tiny-douyin"        # MySQL密码 字符串
+  charset: "utf8mb4"             # MySQL数据库编码 字符串
 
-redis:
-  redisDbName: 1
-  redisHost: 127.0.0.1
-  redisPort: 6380
-  redisPassword: tiny-douyin
-  redisNetwork: tcp
+oss:
+  service: "minio"               # 对象存储服务提供者: minio(目前只有minio可用, S3兼容)
+  ossHost: "127.0.0.1"           # 对象存储服务地址 (因用于生成对象URL, 请设置为公网地址) 字符串
+  ossPort: "9000"                # 对象存储服务端口 字符串
+  bucketName: "tiny-douyin"      # 存储桶名 字符串
+  accessKeyID: "tiny-douyin"     # 访问ID 字符串
+  secretAccessKey: "tiny-douyin" # 访问密钥 字符串
+  expiry: 24                     # 外链过期时间(单位为小时) 数值
 
-zap:
-  Level: "info"            # 日志级别: debug, info, warn, error, dpanic, panic, fatal, 默认 info
-  Format: "console"         # 输出格式: console, json
-  Prefix: "[douyin] " # 日志前缀
-  Directory: "log"          # 存放日志的文件夹
-  ShowLine: true            # 是否显示哪行调用
-  LogInConsole: true        # 是否输出到控制台
-
-Log:               # lumberjack 分割日志的配置信息
-  MaxSize: 500
-  MaxBackups: 3
-  MaxAge: 28
-  Compress: false
+log:
+  path: "./log"                  # 日志输出路径 字符串
+  level: "info"                  # 日志级别: debug, info, warn, error, dpanic, panic, fatal
+  prefix: "[douyin] "            # 日志前缀 字符串
+  showLine: true                 # 是否显示调用行号 布尔值
+  maxSize: 100                   # 单个日志文件最大大小(单位为MB) 数值
+  maxBackups: 3                  # 最多保留数量 数值
+  maxAge: 7                      # 最多保留天数 数值
+  compress: false                # 是否gzip压缩 布尔值

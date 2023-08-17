@@ -7,22 +7,24 @@ import (
 
 type User struct {
 	gorm.Model
-	UserName        string `gorm:"unique"`
+	Username        string `gorm:"uniqueIndex"`
 	Password        string
 	Avatar          string
 	BackgroundImage string
 	Signature       string
-	Videos          []Video   `gorm:"foreignKey:UserID"`
+	Works           []Video   `gorm:"foreignKey:UserID"`
+	Favorites       []*Video  `gorm:"many2many:favorite"`
 	Comments        []Comment `gorm:"foreignKey:UserID"`
-	Likes           []*Video  `gorm:"many2many:like;"`
-	Follows         []*User   `gorm:"many2many:follow;"`
+	Follows         []*User   `gorm:"many2many:follow;joinForeignKey:user_id;JoinReferences:follow_id"`
+	Followers       []*User   `gorm:"many2many:follow;joinForeignKey:follow_id;JoinReferences:user_id"`
+	Messages        []Message `gorm:"foreignKey:FromUserID"`
 }
 
-const passWordCost = 12 //密码加密难度
+const passwordCost = 12 //密码加密难度
 
 // SetPassword 设置密码
 func (user *User) SetPassword(password string) error {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), passWordCost)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), passwordCost)
 	if err != nil {
 		return err
 	}

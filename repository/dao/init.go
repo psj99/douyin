@@ -16,11 +16,11 @@ import (
 
 var _db *gorm.DB
 
-func MySQLInit() {
-	mysqlCfg := conf.Cfg.MySql
+func InitMySQL() {
+	mysqlCfg := conf.Cfg.MySQL
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=True&loc=Local",
-		mysqlCfg.UserName,
+		mysqlCfg.Username,
 		mysqlCfg.Password,
 		mysqlCfg.DbHost,
 		mysqlCfg.DbPort,

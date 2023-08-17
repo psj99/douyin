@@ -11,13 +11,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserRegister(ctx *gin.Context) {
+func POSTUserRegister(ctx *gin.Context) {
 	// 绑定JSON到结构体
 	req := &request.UserRegisterReq{}
 	err := ctx.ShouldBind(req)
 	if err != nil {
 		utils.ZapLogger.Errorf("ShouldBind err: %v", err)
-		ctx.JSON(http.StatusInternalServerError, &response.UserRegisterResp{
+		ctx.JSON(http.StatusBadRequest, &response.Status{
 			Status_Code: -1,
 			Status_Msg:  "注册失败: " + err.Error(),
 		})
@@ -34,7 +34,7 @@ func UserRegister(ctx *gin.Context) {
 		} else {
 			httpCode = http.StatusInternalServerError
 		}
-		ctx.JSON(httpCode, &response.UserRegisterResp{
+		ctx.JSON(httpCode, &response.Status{
 			Status_Code: -1,
 			Status_Msg:  "注册失败: " + err.Error(),
 		})
@@ -42,16 +42,18 @@ func UserRegister(ctx *gin.Context) {
 	}
 
 	// 注册成功
+	status := response.Status{Status_Code: 0, Status_Msg: "注册成功"}
+	resp.Status = status
 	ctx.JSON(http.StatusOK, resp)
 }
 
-func UserLogin(ctx *gin.Context) {
+func POSTUserLogin(ctx *gin.Context) {
 	// 绑定JSON到结构体
 	req := &request.UserLoginReq{}
 	err := ctx.ShouldBind(req)
 	if err != nil {
 		utils.ZapLogger.Errorf("ShouldBind err: %v", err)
-		ctx.JSON(http.StatusInternalServerError, &response.UserLoginResp{
+		ctx.JSON(http.StatusBadRequest, &response.Status{
 			Status_Code: -1,
 			Status_Msg:  "登录失败: " + err.Error(),
 		})
@@ -68,12 +70,56 @@ func UserLogin(ctx *gin.Context) {
 		} else {
 			httpCode = http.StatusInternalServerError
 		}
-		ctx.JSON(httpCode, &response.UserLoginResp{
+		ctx.JSON(httpCode, &response.Status{
 			Status_Code: -1,
 			Status_Msg:  "登录失败: " + err.Error(),
 		})
+		return
 	}
 
 	// 登录成功
+	status := response.Status{Status_Code: 0, Status_Msg: "登录成功"}
+	resp.Status = status
+	ctx.JSON(http.StatusOK, resp)
+}
+
+func GETUserInfo(ctx *gin.Context) {
+	// 绑定JSON到结构体
+	req := &request.UserInfoReq{}
+	err := ctx.ShouldBind(req)
+	if err != nil {
+		utils.ZapLogger.Errorf("ShouldBind err: %v", err)
+		ctx.JSON(http.StatusBadRequest, &response.Status{
+			Status_Code: -1,
+			Status_Msg:  "获取失败: " + err.Error(),
+		})
+		return
+	}
+
+	/*// 从请求中读取目标用户ID并与token比对
+	user_id, ok := ctx.Get("user_id")
+	if !ok || req.User_ID != strconv.FormatUint(uint64(user_id.(uint)), 10) {
+		utils.ZapLogger.Errorf("GETUserInfo err: 查询目标与请求用户不同")
+		ctx.JSON(http.StatusUnauthorized, &response.Status{
+			Status_Code: -1,
+			Status_Msg:  "无权获取",
+		})
+		return
+	}*/
+
+	// 调用获取用户信息
+	resp, err := service.UserInfo(ctx, req)
+	if err != nil {
+		utils.ZapLogger.Errorf("UserInfo err: %v", err)
+		ctx.JSON(http.StatusInternalServerError, &response.Status{
+			Status_Code: -1,
+			Status_Msg:  "获取失败: " + err.Error(),
+		})
+		return
+	}
+
+	// 获取成功
+	status := response.Status{Status_Code: 0, Status_Msg: "获取成功"}
+	resp.Status = status
 	ctx.JSON(http.StatusOK, resp)
 }
