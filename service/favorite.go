@@ -18,7 +18,7 @@ func Favorite(ctx *gin.Context, req *request.FavoriteReq) (resp *response.Favori
 	// 获取请求用户ID
 	req_id, ok := ctx.Get("user_id")
 	if !ok {
-		utils.ZapLogger.Errorf("ctx.Get (user_id) err: %v", err)
+		utils.ZapLogger.Errorf("ctx.Get (user_id) err: inaccessible")
 		return nil, errors.New("无法获取请求用户ID")
 	}
 
