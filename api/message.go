@@ -73,7 +73,8 @@ func GETMessageList(ctx *gin.Context) {
 		return
 	}
 
-	// 处理Pre_Msg_Time
+	// 处理特殊参数
+	// pre_msg_time字段 不存在时req.Pre_Msg_Time为0 此时同样适用于以下处理
 	req.Pre_Msg_Time = req.Pre_Msg_Time / 1000 // API文档有误 请求实为毫秒时间戳 故在此转换
 
 	// 调用获取消息记录

@@ -76,7 +76,7 @@ func GETPublishList(ctx *gin.Context) {
 		return
 	}*/
 
-	// 调用获取用户信息
+	// 调用获取发布列表
 	resp, err := service.PublishList(ctx, req)
 	if err != nil {
 		utils.ZapLogger.Errorf("PublishList err: %v", err)

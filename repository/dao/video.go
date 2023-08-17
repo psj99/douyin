@@ -16,6 +16,14 @@ func CreateVideo(ctx context.Context, videoInfo *model.Video) (video *model.Vide
 	return videoInfo, err
 }
 
+// 根据视频ID找到视频
+func FindVideoByID(ctx context.Context, id uint) (video *model.Video, err error) {
+	DB := GetDB(ctx)
+	video = &model.Video{}
+	err = DB.Model(&model.Video{}).Where("id=?", id).Preload(clause.Associations).First(video).Error
+	return video, err
+}
+
 // 根据更新时间获取视频列表
 func FindVideosByUpdatedAt(ctx context.Context, updatedAt int64, forward bool, num int) (videos []model.Video, err error) {
 	DB := GetDB(ctx)

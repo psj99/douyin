@@ -22,7 +22,7 @@ var ErrorWrongPassword = errors.New("账号或密码错误")
 
 // 用户注册
 func UserRegister(ctx *gin.Context, req *request.UserRegisterReq) (resp *response.UserRegisterResp, err error) {
-	// 查找用户是否已存在
+	// 查找用户是否已存在 //TODO
 	_, err = dao.FindUserByUsername(context.TODO(), req.Username)
 	if err == nil {
 		err = ErrorUserExists
@@ -35,7 +35,8 @@ func UserRegister(ctx *gin.Context, req *request.UserRegisterReq) (resp *respons
 	// 只有err == ErrRecordNotFound时才可以注册
 	// 准备要存储的内容
 	user := &model.User{
-		Username: req.Username,
+		Username:  req.Username,
+		Signature: "Ad Astra Per Aspera", // 添加默认签名
 	}
 	err = user.SetPassword(req.Password) // 向要存储的内容中添加单向加密后的密码
 	if err != nil {
@@ -43,7 +44,7 @@ func UserRegister(ctx *gin.Context, req *request.UserRegisterReq) (resp *respons
 		return nil, err
 	}
 
-	// 存储用户信息
+	// 存储用户信息 //TODO
 	user, err = dao.CreateUser(context.TODO(), user)
 	if err != nil {
 		utils.ZapLogger.Errorf("CreateUser err: %v", err)
@@ -54,7 +55,7 @@ func UserRegister(ctx *gin.Context, req *request.UserRegisterReq) (resp *respons
 	token, err := utils.GenerateToken(user.ID, user.Username)
 	if err != nil {
 		utils.ZapLogger.Errorf("GenerateToken err: %v", err)
-		return nil, err
+		token = "" // 响应为注册成功 但将无法自动登录
 	}
 
 	return &response.UserRegisterResp{User_ID: user.ID, Token: token}, nil
@@ -92,49 +93,17 @@ func UserLogin(ctx *gin.Context, req *request.UserLoginReq) (resp *response.User
 
 // 用户信息
 func UserInfo(ctx *gin.Context, req *request.UserInfoReq) (resp *response.UserInfoResp, err error) {
-	// 读取用户信息
-	userID, err := strconv.ParseUint(req.User_ID, 10, 64) // string转十进制uint64
+	// 读取目标用户信息
+	user_id, err := strconv.ParseUint(req.User_ID, 10, 64)
 	if err != nil {
 		utils.ZapLogger.Errorf("ParseUint err: %v", err)
 		return nil, err
 	}
-	user, err := dao.FindUserByID(context.TODO(), uint(userID))
+	userInfo, err := readUserInfo(ctx, uint(user_id))
 	if err != nil {
-		utils.ZapLogger.Errorf("FindUserByID err: %v", err)
+		utils.ZapLogger.Errorf("readUserInfo err: %v", err)
 		return nil, err
 	}
 
-	// 临时方案 亟待优化 (需要大幅更改数据库模型) //TODO
-	followCount := uint(len(user.Follows))     // 统计关注数
-	followerCount := uint(len(user.Followers)) // 统计粉丝数
-	workCount := uint(len(user.Works))         // 统计作品数
-	favoriteCount := uint(len(user.Favorites)) // 统计点赞数
-
-	// 统计获赞数
-	var favoritedCount uint = 0
-	for _, video := range user.Works {
-		favoritedCount += uint(len(video.Favorited))
-	}
-
-	// 是否关注
-	Me_ID, ok := ctx.Get("user_id") // 获取自己
-	if !ok {
-		utils.ZapLogger.Errorf("ctx.Get (user_id) err: inaccessible")
-		return nil, errors.New("无法获取user_id")
-	}
-	isFollow := dao.CheckFollow(context.TODO(), Me_ID.(uint), uint(userID))
-
-	return &response.UserInfoResp{User: response.User{
-		ID:               user.ID,
-		Name:             user.Username,
-		Follow_Count:     followCount,
-		Follower_Count:   followerCount,
-		Is_Follow:        isFollow,
-		Avatar:           user.Avatar,
-		Background_Image: user.BackgroundImage,
-		Signature:        user.Signature,
-		Total_Favorited:  strconv.FormatUint(uint64(favoritedCount), 10),
-		Work_Count:       workCount,
-		Favorite_Count:   favoriteCount,
-	}}, nil
+	return &response.UserInfoResp{User: *userInfo}, nil
 }
