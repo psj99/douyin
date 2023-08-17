@@ -1,4 +1,5 @@
 system:
+  appEnv: "debug"
   httpPort: "8080"               # http服务运行端口 字符串
   tempDir: "./temp"              # 临时目录路径 字符串
 
@@ -10,15 +11,6 @@ mysql:
   password: "tiny-douyin"        # MySQL密码 字符串
   charset: "utf8mb4"             # MySQL数据库编码 字符串
 
-oss:
-  service: "minio"               # 对象存储服务提供者: minio(目前只有minio可用, S3兼容)
-  ossHost: "127.0.0.1"           # 对象存储服务地址 (因用于生成对象URL, 请设置为公网地址) 字符串
-  ossPort: "9000"                # 对象存储服务端口 字符串
-  bucketName: "tiny-douyin"      # 存储桶名 字符串
-  accessKeyID: "tiny-douyin"     # 访问ID 字符串
-  secretAccessKey: "tiny-douyin" # 访问密钥 字符串
-  expiry: 24                     # 外链过期时间(单位为小时) 数值
-
 log:
   path: "./log"                  # 日志输出路径 字符串
   level: "info"                  # 日志级别: debug, info, warn, error, dpanic, panic, fatal
@@ -28,3 +20,19 @@ log:
   maxBackups: 3                  # 最多保留数量 数值
   maxAge: 7                      # 最多保留天数 数值
   compress: false                # 是否gzip压缩 布尔值
+
+minio_oss:
+  service: "minio"               # 对象存储服务提供者: minio(目前只有minio可用, S3兼容)
+  ossHost: "127.0.0.1"           # 对象存储服务地址 (因用于生成对象URL, 请设置为公网地址) 字符串
+  ossPort: "9000"                # 对象存储服务端口 字符串
+  bucketName: "tiny-douyin"      # 存储桶名 字符串
+  accessKeyID: "tiny-douyin"     # 访问ID 字符串
+  secretAccessKey: "tiny-douyin" # 访问密钥 字符串
+  expiry: 24                     # 外链过期时间(单位为小时) 数值
+
+qiniu_oss:
+  accessKey: ""
+  secretKey : ""
+  bucket    : ""
+  domain    : ""
+

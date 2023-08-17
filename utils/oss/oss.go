@@ -2,6 +2,7 @@ package oss
 
 import (
 	"douyin/conf"
+	"douyin/storage"
 	"douyin/utils"
 
 	"context"
@@ -33,10 +34,10 @@ type OSService interface {
 var _oss OSService
 
 func InitOSS() {
-	if conf.Cfg.OSS.Service == "minio" {
+	if conf.Cfg.MinioOSS.Service == "minio" {
 		_oss = &MinIOService{}
 	} else {
-		panic(errors.New("暂不支持该OSS: " + conf.Cfg.OSS.Service))
+		panic(errors.New("暂不支持该OSS: " + conf.Cfg.MinioOSS.Service))
 	}
 	_oss.init()
 }
@@ -111,7 +112,7 @@ func UploadVideoStream(ctx context.Context, objectID string, videoStream io.Read
 	videoName, coverName := GetObjectName(objectID)
 
 	// 获取默认封面
-	coverStream, err := conf.Emb.Open("assets/defaultCover" + coverExt)
+	coverStream, err := storage.Emb.Open("assets/defaultCover" + coverExt)
 	if err != nil {
 		utils.ZapLogger.Errorf("Emb.Open (defaultCover) err: %v", err)
 		return err
