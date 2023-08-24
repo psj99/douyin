@@ -1,89 +1,44 @@
 package conf
 
 import (
-	"flag"
-	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/spf13/viper"
 )
 
-type System struct {
-	AppEnv   string `yaml:"appEnv"`
-	HttpPort string `yaml:"httpPort"`
-}
-
-type JWT struct {
-	SignKey string `yaml:"sign_key"`
-}
-
-type MySql struct {
-	DbHost          string `yaml:"dbHost"`
-	DbPort          string `yaml:"dbPort"`
-	DbName          string `yaml:"dbName"`
-	UserName        string `yaml:"userName"`
-	Password        string `yaml:"password"`
-	Charset         string `yaml:"charset"`
-	MaxIdleConns    int    `yaml:"maxIdleConns"`
-	MaxOpenConns    int    `yaml:"maxOpenConns"`
-	ConnMaxLifetime int    `yaml:"connMaxLifetime"`
-}
-
-type Redis struct {
-	RedisHost     string `yaml:"redisHost"`
-	RedisPort     string `yaml:"redisPort"`
-	RedisPassword string `yaml:"redisPassword"`
-	RedisDbName   int    `yaml:"redisDbName"`
-	RedisNetwork  string `yaml:"redisNetwork"`
-}
-type Log struct {
-	Level        string `yaml:"level"`
-	Prefix       string `yaml:"prefix"`
-	Format       string `yaml:"format"`
-	Directory    string `yaml:"directory"`
-	MaxAge       int    `yaml:"maxAge"`
-	ShowLine     bool   `yaml:"showLine"`
-	LogInConsole bool   `yaml:"logInConsole"`
-	MaxSize      int    `yaml:"maxSize"`
-	MaxBackups   int    `yaml:"maxBackups"`
-	Compress     bool   `yaml:"compress"`
-}
-type Qiniu struct {
-	AccessKey string `yaml:"accessKey"`
-	SecretKey string `yaml:"secretKey"`
-	Bucket    string `yaml:"bucket"`
-	Domain    string `yaml:"domain"`
-}
-
 type Config struct {
 	System *System `yaml:"system"`
-	MySql  *MySql  `yaml:"mysql"`
+	MySQL  *MySQL  `yaml:"mysql"`
+	OSS    *OSS    `yaml:"oss"`
 	Redis  *Redis  `yaml:"redis"`
 	Log    *Log    `yaml:"log"`
-	Qiniu  *Qiniu  `yaml:"qiniu"`
 }
 
-func NewConfig() *Config {
-	var cfg *Config
-	// 配置文件优先级：环境变量 > 命令行参数 > 默认值
-	envConf := os.Getenv("APP_CONF")
-	if envConf == "" {
-		flag.StringVar(&envConf, "conf", "conf/locale/config.yaml", "config path, eg: -conf conf/local.yaml")
-		flag.Parse()
-	}
-	fmt.Println("load conf file:", envConf)
+var _cfg *Config
 
-	v := viper.New()
-	v.SetConfigFile(envConf)
-	err := v.ReadInConfig()
+func Cfg() *Config {
+	return _cfg
+}
+
+func InitConfig() {
+	workDir, _ := os.Getwd()
+	viper.SetConfigName("config")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(workDir + "/conf/locale")
+	viper.AddConfigPath(workDir)
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic(err)
+	}
+	err = viper.Unmarshal(&_cfg)
 	if err != nil {
 		panic(err)
 	}
 
-	err = v.Unmarshal(cfg)
-	if err != nil {
-		panic(err)
+	// 特殊值替换
+	if strings.ToLower(_cfg.System.TempDir) == "system" { // 若使用系统默认临时文件夹
+		_cfg.System.TempDir = filepath.Join(os.TempDir(), "douyin")
 	}
-
-	return cfg
 }
